@@ -1,9 +1,10 @@
 require File.dirname(__FILE__) + '/test_helper'
 
 class InheritViewsController < ActionController::Base
-  inherit_views :first, :second
-  self.template_root = File.dirname(__FILE__) + '/views'
-  
+  inherit_views 'first', :second, :third
+    
+  self.template_root = File.join(File.dirname(__FILE__), 'views')
+
   def default; end
     
   def first; end
@@ -13,6 +14,10 @@ class InheritViewsController < ActionController::Base
   def in_all; end
     
   def in_first_and_second; end
+
+  def nested; end
+  
+  def rescue_action(exception); super(exception); raise exception; end
 end
 
 class InheritViewsTest < Test::Unit::TestCase
@@ -23,8 +28,8 @@ class InheritViewsTest < Test::Unit::TestCase
     @response = ActionController::TestResponse.new
   end
   
-  def test_additional_view_paths_array
-    assert_equal [:first, :second], @controller.inherit_views_from
+  def test_inherit_view_paths_array
+    assert_equal ['first', 'second', 'third'], @controller.inherit_view_paths
   end
   
   def test_action_exists_in_default_views
@@ -52,29 +57,127 @@ class InheritViewsTest < Test::Unit::TestCase
     assert_tag :tag => 'first'
   end
   
+  def test_nested_views
+    get :nested
+    assert_tag :tag => 'default'
+    assert_tag :tag => 'first'
+    assert_tag :tag => 'second'
+  end
+  
   def test_view_is_not_there
-    get :in_none
-    assert_response :missing
+    assert_raises(::ActionController::UnknownAction) { get :in_none }
+  end
+  
+  def test_bad_template_specification
+    assert_raises(::ActionView::TemplateError) { get :bad_template }
   end
   
   def test_parent_views_for
     output = @controller.parent_views_for :first do
-      assert_equal [:second], @controller.inherit_views_from
+      assert_equal ['second', 'third'], @controller.inherit_view_paths
+      assert_equal true, @controller.exclude_default_path
       :output
     end
-    assert_equal [:first, :second], @controller.inherit_views_from
+    assert_equal ['first', 'second', 'third'], @controller.inherit_view_paths
+    assert_equal false, @controller.exclude_default_path
     assert_equal :output, output 
   end
   
   def test_exclude_views_for
-    output = @controller.exclude_views_for :second do
-      assert_equal [:first], @controller.inherit_views_from
+    output = @controller.exclude_views_for 'second' do
+      assert_equal ['first', 'third'], @controller.inherit_view_paths
+      assert_equal false, @controller.exclude_default_path
       :output
     end
-    assert_equal [:first, :second], @controller.inherit_views_from
+    assert_equal ['first', 'second', 'third'], @controller.inherit_view_paths
+    assert_equal false, @controller.exclude_default_path
+    assert_equal :output, output 
+  end
+  
+  def test_exclude_views_for_multiple
+    output = @controller.exclude_views_for(:inherit_views, 'third') do
+      assert_equal ['first', 'second'], @controller.inherit_view_paths
+      assert_equal true, @controller.exclude_default_path
+      :output
+    end
+    assert_equal ['first', 'second', 'third'], @controller.inherit_view_paths
+    assert_equal false, @controller.exclude_default_path
     assert_equal :output, output 
   end
 end
+
+#
+# Complex paths test
+#
+
+class ComplexPathController < ActionController::Base
+  inherit_views 'complex_path/one', 'complex_path/two'
+  
+  self.template_root = File.join(File.dirname(__FILE__), 'views')
+
+  def index; end
+  def one; end
+  def two; end
+  
+  def rescue_action(exception); super(exception); raise exception; end
+end
+
+class ComplexPathTest < Test::Unit::TestCase
+
+  def setup
+    @controller = ComplexPathController.new
+    @request = ActionController::TestRequest.new
+    @response = ActionController::TestResponse.new
+  end
+  
+  def test_index
+    get :index
+    assert_tag :tag => 'index'
+  end
+  
+  def test_one
+    get :one
+    assert_tag :tag => 'one'
+  end
+  
+  def test_two
+    get :two
+    assert_tag :tag => 'two'
+  end
+end
+
+#
+# parent views test
+#
+
+class ParentViewsController < ActionController::Base
+  inherit_views 'parent_views/inherited'
+  self.template_root = File.join(File.dirname(__FILE__), 'views')
+
+  def index; end
+  
+  def rescue_action(exception); super(exception); raise exception; end
+end
+
+class ParentViewsTest < Test::Unit::TestCase
+
+  def setup
+    @controller = ParentViewsController.new
+    @request = ActionController::TestRequest.new
+    @response = ActionController::TestResponse.new
+  end
+  
+  def test_index
+    get :index
+    assert_tag :tag => 'index_in_parent_views'
+    assert_tag :tag => 'index_in_inherited'
+  end
+  
+  def test_not_there
+    assert_raises (ActionView::TemplateError) { get :not_there }
+  end
+end
+
 
 #
 # Inheritance of views testing
@@ -112,40 +215,40 @@ class FooeyedChild < Fooeyed
 end
 
 class IgnoringAncestry < FooeyedGrandChild
-  self.inherit_views_from = [:you_can_go_you_own_way]
+  self.inherit_view_paths = ['you_can_go_you_own_way']
 end
 
 class InheritViewsInheritanceTest < Test::Unit::TestCase
   
   def test_base
-    assert_equal [], ActionController::Base.inherit_views_from
+    assert_equal [], ActionController::Base.inherit_view_paths
   end
   
   def test_parent
-    assert_equal [:parent_1, :parent_2], Parent.inherit_views_from
+    assert_equal ['parent_1', 'parent_2'], Parent.inherit_view_paths
   end
   
   def test_child
-    assert_equal [:child, :parent_1, :parent_2], Child.inherit_views_from
+    assert_equal ['child', 'parent_1', 'parent_2'], Child.inherit_view_paths
   end
   
   def test_grand_child
-    assert_equal [:parent_2, :baby, :child, :parent_1], GrandChild.inherit_views_from
+    assert_equal ['parent_2', 'baby', 'child', 'parent_1'], GrandChild.inherit_view_paths
   end
   
   def test_fooeyed
-    assert_equal [:foo], Fooeyed.inherit_views_from
+    assert_equal ['foo'], Fooeyed.inherit_view_paths
   end
   
   def test_fooeyed_grand_child
-    assert_equal [:foo, :parent_2, :baby, :child, :parent_1], FooeyedGrandChild.inherit_views_from
+    assert_equal ['foo', 'parent_2', 'baby', 'child', 'parent_1'], FooeyedGrandChild.inherit_view_paths
   end
   
   def test_fooeyed_child
-    assert_equal [:bar, :foo], FooeyedChild.inherit_views_from
+    assert_equal ['bar', 'foo'], FooeyedChild.inherit_view_paths
   end
   
   def test_ignoring_ancestry
-    assert_equal [:you_can_go_you_own_way], IgnoringAncestry.inherit_views_from
+    assert_equal ['you_can_go_you_own_way'], IgnoringAncestry.inherit_view_paths
   end
 end

@@ -32,6 +32,22 @@ class InheritViewsTest < Test::Unit::TestCase
     assert_equal ['first', 'second', 'third'], @controller.inherit_view_paths
   end
   
+  def test_pick_inherited_template_path
+    get :default # to load @template
+    
+    assert_equal 'inherit_views/default',         @controller.pick_inherited_template_path('inherit_views/default')
+    assert_equal 'inherit_views/default.rhtml',   @controller.pick_inherited_template_path('inherit_views/default.rhtml')
+    assert_equal 'first/first',                   @controller.pick_inherited_template_path('inherit_views/first')
+    assert_equal 'second/second',                 @controller.pick_inherited_template_path('inherit_views/second')
+    assert_equal 'inherit_views/in_all',          @controller.pick_inherited_template_path('inherit_views/in_all')
+    assert_equal 'first/in_first_and_second',     @controller.pick_inherited_template_path('inherit_views/in_first_and_second')
+
+    assert_equal 'inherit_views/default_rjs',     @controller.pick_inherited_template_path('inherit_views/default_rjs')    
+    assert_equal 'inherit_views/default_rjs.rjs', @controller.pick_inherited_template_path('inherit_views/default_rjs.rjs')
+    assert_equal 'second/second_rjs',             @controller.pick_inherited_template_path('inherit_views/second_rjs')
+    assert_equal 'second/second_rjs.rjs',         @controller.pick_inherited_template_path('inherit_views/second_rjs.rjs')
+  end
+  
   def test_action_exists_in_default_views
     get :default
     assert_response :success
@@ -75,33 +91,11 @@ class InheritViewsTest < Test::Unit::TestCase
   def test_parent_views_for
     output = @controller.parent_views_for :first do
       assert_equal ['second', 'third'], @controller.inherit_view_paths
-      assert_equal true, @controller.exclude_default_path
+      assert_equal true, @controller.instance_eval {@inherit_views_exclude_default}
       :output
     end
     assert_equal ['first', 'second', 'third'], @controller.inherit_view_paths
-    assert_equal false, @controller.exclude_default_path
-    assert_equal :output, output 
-  end
-  
-  def test_exclude_views_for
-    output = @controller.exclude_views_for 'second' do
-      assert_equal ['first', 'third'], @controller.inherit_view_paths
-      assert_equal false, @controller.exclude_default_path
-      :output
-    end
-    assert_equal ['first', 'second', 'third'], @controller.inherit_view_paths
-    assert_equal false, @controller.exclude_default_path
-    assert_equal :output, output 
-  end
-  
-  def test_exclude_views_for_multiple
-    output = @controller.exclude_views_for(:inherit_views, 'third') do
-      assert_equal ['first', 'second'], @controller.inherit_view_paths
-      assert_equal true, @controller.exclude_default_path
-      :output
-    end
-    assert_equal ['first', 'second', 'third'], @controller.inherit_view_paths
-    assert_equal false, @controller.exclude_default_path
+    assert_equal nil, @controller.instance_eval {@inherit_views_exclude_default}
     assert_equal :output, output 
   end
 end
@@ -221,34 +215,43 @@ end
 class InheritViewsInheritanceTest < Test::Unit::TestCase
   
   def test_base
-    assert_equal [], ActionController::Base.inherit_view_paths
+    assert_raises(NoMethodError) { ActionController::Base.inherit_view_paths }
+    assert_equal nil, ActionController::Base.has_inheritable_views
   end
   
   def test_parent
     assert_equal ['parent_1', 'parent_2'], Parent.inherit_view_paths
+    assert_equal true, Parent.has_inheritable_views
   end
   
   def test_child
     assert_equal ['child', 'parent_1', 'parent_2'], Child.inherit_view_paths
+    assert_equal true, Child.has_inheritable_views
   end
   
   def test_grand_child
     assert_equal ['parent_2', 'baby', 'child', 'parent_1'], GrandChild.inherit_view_paths
+    assert_equal true, GrandChild.has_inheritable_views
   end
   
   def test_fooeyed
     assert_equal ['foo'], Fooeyed.inherit_view_paths
+    assert_equal true, Fooeyed.has_inheritable_views
   end
   
   def test_fooeyed_grand_child
     assert_equal ['foo', 'parent_2', 'baby', 'child', 'parent_1'], FooeyedGrandChild.inherit_view_paths
+    assert_equal true, FooeyedGrandChild.has_inheritable_views
   end
   
   def test_fooeyed_child
     assert_equal ['bar', 'foo'], FooeyedChild.inherit_view_paths
+    assert_equal true, FooeyedChild.has_inheritable_views
   end
   
-  def test_ignoring_ancestry
+  def test_own_ancestry
     assert_equal ['you_can_go_you_own_way'], IgnoringAncestry.inherit_view_paths
+    assert_equal true, IgnoringAncestry.has_inheritable_views
   end
+  
 end

@@ -130,6 +130,10 @@ module Ardes# :nodoc:
         controller.parent_views_for(path, &block)
       end
       
+      def render_parent(options = {})
+        parent_views { render({:file => @current_render, :use_full_path => true}.merge(options)) }
+      end
+      
       def render_file_with_inherit_views(template_path, use_full_path = true, local_assigns = {})
         orig_current_render = @current_render
         

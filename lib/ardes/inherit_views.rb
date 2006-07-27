@@ -72,7 +72,7 @@ module Ardes# :nodoc:
           
           if @inherit_views_exclude_default or !@template.file_exists?(template_path)
             inherit_view_paths.each do |path|
-              [:inherited_view_subsitute_path, :inherited_view_prepend_path].each do |method|
+              [:substitute_entire_path, :substitute_root_path, :prepend_path].each do |method|
                 inh_path = send(method, template_path, path)
                 return inherit_views_set_cached(template_path, inh_path) if @template.file_exists?(inh_path) 
               end
@@ -85,11 +85,15 @@ module Ardes# :nodoc:
         end
       
       private
-        def inherited_view_subsitute_path(template_path, path)
+        def substitute_entire_path(template_path, path)
           template_path.sub(/^.*\//, path + '/')
         end
       
-        def inherited_view_prepend_path(template_path, path)
+        def substitute_root_path(template_path, path)
+          path + template_path.sub(template_path.sub(/\/.*$/, ''), '')
+        end
+          
+        def prepend_path(template_path, path)
           "#{path}/#{template_path}"
         end
         

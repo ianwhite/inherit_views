@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/test_helper'
 
-class InheritViewsController < ActionController::Base #:nodoc:
+class InheritViewsController < ActionController::Base# :nodoc:
   inherit_views 'first', 'second', 'third'
     
   self.template_root = File.join(File.dirname(__FILE__), 'views')
@@ -20,7 +20,7 @@ class InheritViewsController < ActionController::Base #:nodoc:
   def rescue_action(exception); super(exception); raise exception; end
 end
 
-class InheritViewsTest < Test::Unit::TestCase # :nodoc:
+class InheritViewsTest < Test::Unit::TestCase# :nodoc:
 
   def setup
     @controller = InheritViewsController.new
@@ -161,6 +161,10 @@ class IgnoringAncestry < FooeyedGrandChild# :nodoc:
   self.inherit_view_paths = ['you_can_go_your_own_way']
 end
 
+class IgnoringInheritViews < FooeyedGrandChild# :nodoc:
+  self.has_inheritable_views = false
+end
+
 class InheritViewsInheritanceTest < Test::Unit::TestCase# :nodoc:
   def test_base
     assert_raises(NoMethodError) { ActionController::Base.inherit_view_paths }
@@ -200,5 +204,9 @@ class InheritViewsInheritanceTest < Test::Unit::TestCase# :nodoc:
   def test_own_ancestry
     assert_equal ['you_can_go_your_own_way'], IgnoringAncestry.inherit_view_paths
     assert_equal true, IgnoringAncestry.has_inheritable_views
+  end
+  
+  def test_ignoring_inherit_views
+    assert_equal false, IgnoringInheritViews.has_inheritable_views
   end
 end

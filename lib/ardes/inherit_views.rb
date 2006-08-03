@@ -80,17 +80,19 @@ module Ardes# :nodoc:
       # or the current controller's default path if no argument is given
       def inherit_views(*view_paths)
         unless self.included_modules.include?(Ardes::ActionController::InheritViews::InstanceMethods)
-          class_inheritable_accessor :inherit_view_paths
+          class_inheritable_accessor :inherit_view_paths, :inherit_views_cache
           self.inherit_view_paths = []
           include InstanceMethods
         end
         
         self.has_inheritable_views = true
         
+        # setup view paths, any duplicates are moved to the front of the array
         view_paths = [self.controller_path] if view_paths.size == 0
-        view_paths = view_paths.collect {|p| p.to_s }
-        self.inherit_view_paths = self.inherit_view_paths - view_paths
-        self.inherit_view_paths = view_paths + self.inherit_view_paths
+        self.inherit_view_paths = view_paths + (self.inherit_view_paths - view_paths)
+        
+        # setup cache
+        self.inherit_views_cache = {}
       end
       
       module InstanceMethods
@@ -111,11 +113,13 @@ module Ardes# :nodoc:
         # Picks the first template that exists in the inherited view paths (including the default path)
         # Use this before rendering
         def pick_template_path(template_path)
-          @template.file_exists?(template_path) ? template_path : pick_inherited_template_path(template_path)
+          return self.inherit_views_cache[template_path] if self.inherit_views_cache.key?(template_path)
+          inh_path = @template.file_exists?(template_path) ? template_path : pick_inherited_template_path(template_path)
+          self.inherit_views_cache[template_path] = inh_path
         end
         
         # Picks the first tmeplate that exists from the given path array (which defaults to
-        # the controllers inherit_veiw_paths array)
+        # the controllers inherit_view_paths array)
         def pick_inherited_template_path(template_path, from = self.inherit_view_paths)
           from.each do |path|
             inh_path = template_path.sub(/^.*?\//, path + '/')

@@ -67,7 +67,6 @@ module Ardes# :nodoc:
     # == In Views
     #
     module InheritViews
-      
       # Raised when a matching template_path cannot be found amongst the default view path
       # or inherited view paths
       class PathNotFound < RuntimeError; end
@@ -78,27 +77,44 @@ module Ardes# :nodoc:
       
       # Specify this to have your controller inherit its views from the specified path
       # or the current controller's default path if no argument is given
+      #
+      # == Options
+      #   * <tt>:at</tt> - specify where the view path(s) are to be inserted. Values are:
+      #     * <tt>:front</tt> - (default) the view path(s) are inserted at the front of the array (immediate parent)
+      #     * <tt>:end</tt> - the view path(s) are inserted at the end of the array (root of inheritance)
+      #     * <tt>String</tt> - view path(s) are inserted before the named path.  This is useful if
+      #       you have mixins that are conditionally included (in different subclasses for example) and
+      #       you don't want them to override your own view paths, but you want view paths to fall back on these
+      #
       def inherit_views(*view_paths)
+        options = (view_paths.last.is_a?(Hash) ? view_paths.pop : {}).reverse_merge(:at => :front)
+        
         unless self.included_modules.include?(Ardes::ActionController::InheritViews::InstanceMethods)
-          class_inheritable_accessor :inherit_view_paths, :inherit_views_cache
+          class_inheritable_accessor :inherit_view_paths
           self.inherit_view_paths = []
           include InstanceMethods
         end
-        
         self.has_inheritable_views = true
         
-        # setup view paths, any duplicates are moved to the front of the array
         view_paths = [self.controller_path] if view_paths.size == 0
-        self.inherit_view_paths = view_paths + (self.inherit_view_paths - view_paths)
+        self.inherit_view_paths = self.inherit_view_paths - view_paths # remove duplicates
         
-        # setup cache
-        self.inherit_views_cache = {}
+        if options[:at] == :front
+          self.inherit_view_paths.unshift(*view_paths)
+        elsif options[:at] == :end
+          self.inherit_view_paths.push(*view_paths)
+        else
+          self.inherit_view_paths.insert(self.inherit_view_paths.index(options[:at]).to_i, *view_paths)
+        end
       end
       
       module InstanceMethods
         def self.included(base)# :nodoc:
           base.hide_action self.public_instance_methods
           base.class_eval do
+            require 'active_support/caching_tools'
+            extend ::ActiveSupport::CachingTools::HashCaching
+            hash_cache :pick_template_path
             alias_method_chain :render_file, :inherit_views
             alias_method_chain :default_template_name, :inherit_views
           end
@@ -108,14 +124,14 @@ module Ardes# :nodoc:
         def render_file_with_inherit_views(template_path, status = nil, use_full_path = false, locals = {}) #:nodoc:
           template_path = pick_template_path(template_path) if self.has_inheritable_views and use_full_path
           render_file_without_inherit_views(template_path, status, use_full_path, locals)
+        rescue PathNotFound
+          raise ::ActionController::MissingTemplate, "Missing #{template_path} (also not found in inherted view paths: #{self.inherit_view_paths.join(", ")})"
         end
         
         # Picks the first template that exists in the inherited view paths (including the default path)
         # Use this before rendering
         def pick_template_path(template_path)
-          return self.inherit_views_cache[template_path] if self.inherit_views_cache.key?(template_path)
-          inh_path = @template.file_exists?(template_path) ? template_path : pick_inherited_template_path(template_path)
-          self.inherit_views_cache[template_path] = inh_path
+          @template.file_exists?(template_path) ? template_path : pick_inherited_template_path(template_path)
         end
         
         # Picks the first tmeplate that exists from the given path array (which defaults to
@@ -131,7 +147,16 @@ module Ardes# :nodoc:
       private
         # picks template path on the default template name
         def default_template_name_with_inherit_views(action_name = self.action_name)
-          pick_template_path(default_template_name_without_inherit_views(action_name))
+          default = default_template_name_without_inherit_views(action_name)
+          pick_template_path(default)
+        rescue PathNotFound
+          default
+        end
+        
+        def template_exists_with_inherit_views?(template_path = default_template_name)
+          template_exists_without_inherit_views?(pick_template_path(template_path))
+        rescue PathNotFound
+          false
         end
       end
     end
@@ -149,7 +174,7 @@ module Ardes# :nodoc:
     #   <%= render_parent :locals => {:foo => foo} %>
     #   <%= render_parent :layout => false %>
     #
-    # To enable this functionality, there is a new instance variable _@current_render_
+    # To enable this functionality, there is a new instance variable @current_render
     # which holds the name of the file currently being rendered (similar to @first_render).
     # In tempate 'views/foo/bar.rhtml'
     #
@@ -171,14 +196,11 @@ module Ardes# :nodoc:
       # takes normal rendering options (:layout, :locals, etc)
       def render_parent(options = {})
         current_path = @current_render.sub(/\/.*$/, '')
-        
         inherit_paths = controller.inherit_view_paths.dup
         if path_index = inherit_paths.index(current_path)
           inherit_paths.slice!(0..path_index)
         end
-        
         to_render = controller.pick_inherited_template_path(@current_render, inherit_paths)
-        
         render(options.merge(:file => to_render, :use_full_path => true))
       end
       
@@ -186,12 +208,9 @@ module Ardes# :nodoc:
       # the template being rendered
       def render_file_with_inherit_views(template_path, use_full_path = true, local_assigns = {})# :nodoc:
         orig_current_render = @current_render
-        
         template_path = controller.pick_template_path(template_path) if controller.has_inheritable_views and use_full_path
-        
         @current_render = template_path
         render_file_without_inherit_views(template_path, use_full_path, local_assigns)
-      
       ensure
         @current_render = orig_current_render
       end

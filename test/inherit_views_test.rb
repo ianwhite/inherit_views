@@ -17,6 +17,8 @@ class InheritViewsController < ActionController::Base# :nodoc:
 
   def nested; end
   
+  def in_none; end
+  
   def rescue_action(exception); super(exception); raise exception; end
 end
 
@@ -41,7 +43,6 @@ class InheritViewsTest < Test::Unit::TestCase# :nodoc:
     assert_equal 'second/second',                 @controller.pick_template_path('inherit_views/second')
     assert_equal 'inherit_views/in_all',          @controller.pick_template_path('inherit_views/in_all')
     assert_equal 'first/in_first_and_second',     @controller.pick_template_path('inherit_views/in_first_and_second')
-                                                                   
     assert_equal 'inherit_views/default_rjs',     @controller.pick_template_path('inherit_views/default_rjs')    
     assert_equal 'inherit_views/default_rjs.rjs', @controller.pick_template_path('inherit_views/default_rjs.rjs')
     assert_equal 'second/second_rjs',             @controller.pick_template_path('inherit_views/second_rjs')
@@ -81,11 +82,15 @@ class InheritViewsTest < Test::Unit::TestCase# :nodoc:
   end
   
   def test_view_is_not_there
-    assert_raises(Ardes::ActionController::InheritViews::PathNotFound) { get :in_none }
+    assert_raises(ActionController::MissingTemplate) { get :in_none }
+  end
+  
+  def test_action_is_not_there
+    assert_raises(ActionController::UnknownAction) { get :unknown }
   end
   
   def test_bad_template_specification
-    assert_raises(::ActionView::TemplateError) { get :bad_template }
+    assert_raises(ActionView::TemplateError) { get :bad_template }
   end
 end
 
@@ -131,7 +136,7 @@ class Parent < ActionController::Base# :nodoc:
 end
 
 class Child < Parent# :nodoc:
-  inherit_views
+  inherit_views :at => :end
 end
 
 class GrandChild < Child# :nodoc:
@@ -140,7 +145,7 @@ end
 
 module FooAct# :nodoc:
   def foo_view
-    inherit_views 'foo'
+    inherit_views 'foo', :at => 'parent_1'
   end
 end
 ActionController::Base.class_eval { extend FooAct }
@@ -177,12 +182,12 @@ class InheritViewsInheritanceTest < Test::Unit::TestCase# :nodoc:
   end
   
   def test_child
-    assert_equal ['child', 'parent_1', 'parent_2'], Child.inherit_view_paths
+    assert_equal ['parent_1', 'parent_2', 'child'], Child.inherit_view_paths
     assert_equal true, Child.has_inheritable_views
   end
   
   def test_grand_child
-    assert_equal ['parent_2', 'baby', 'child', 'parent_1'], GrandChild.inherit_view_paths
+    assert_equal ['parent_2', 'baby', 'parent_1', 'child'], GrandChild.inherit_view_paths
     assert_equal true, GrandChild.has_inheritable_views
   end
   
@@ -192,7 +197,7 @@ class InheritViewsInheritanceTest < Test::Unit::TestCase# :nodoc:
   end
   
   def test_fooeyed_grand_child
-    assert_equal ['foo', 'parent_2', 'baby', 'child', 'parent_1'], FooeyedGrandChild.inherit_view_paths
+    assert_equal ['parent_2', 'baby', 'foo', 'parent_1', 'child'], FooeyedGrandChild.inherit_view_paths
     assert_equal true, FooeyedGrandChild.has_inheritable_views
   end
   

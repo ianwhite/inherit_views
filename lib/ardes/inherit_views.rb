@@ -208,7 +208,9 @@ module Ardes# :nodoc:
       # the template being rendered
       def render_file_with_inherit_views(template_path, use_full_path = true, local_assigns = {})# :nodoc:
         orig_current_render = @current_render
-        template_path = controller.pick_template_path(template_path) if controller.has_inheritable_views and use_full_path
+        if defined?(controller.has_inheritable_views) and controller.has_inheritable_views and use_full_path
+          template_path = controller.pick_template_path(template_path)
+        end
         @current_render = template_path
         render_file_without_inherit_views(template_path, use_full_path, local_assigns)
       ensure

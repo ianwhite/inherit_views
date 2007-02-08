@@ -1,0 +1,54 @@
+# The FirstController class (a controller with: inherit_views) 
+# * should inherit_views
+# * should have inherit view paths == ['first']
+# A new FirstController
+# * should inherit_views
+# * should have inherit view paths == ['first']
+# A FirstController's views
+# * should render contents of 'first/in_all' when rendering 'first/in_all
+# * should raise error when rendering second/in_first, as 'second' is not in inherit_view_paths
+# * should raise error when rendering first/not_there, as the file 'not_there' is not present
+# The SecondController class (a controller with: inherit_views 'first')
+# * should inherit_views
+# * should have inherit view paths == ['second', 'first']
+# A SecondController
+# * should inherit_views
+# * should have inherit view paths == ['second', 'first']
+# A SecondController's actions
+# * should render first/in_first when GETing :in_first
+# * should render second/in_second when GETing :in_second
+# A SecondController's views
+# * should render contents of 'first/in_first' when rendering 'second/in_first
+# * should render contents of 'second/in_first_and_second' when rendering 'second/in_first_and_second
+# * should render contents of 'second/in_all' when rendering 'second/in_all
+# * should render parent views when <%= render_parent %> is in the view
+# * should raise error when rendering third/in_second, as 'third' is not in inherit_view_paths
+# * should raise error when rendering second/not_there, as the file 'not_there' is not present
+# The ThirdController class (a controller inheriting from SecondController)
+# * should inherit_views
+# * should have inherit view paths == ['third', 'second', 'first']
+# A ThirdController
+# * should inherit_views
+# * should have inherit view paths == ['third', 'first']
+# A ThirdController's actions
+# * should render first/in_first when GETing :in_first
+# * should render second/in_second when GETing :in_second
+# * should render third/in_third when GETing :in_third
+# A ThirdController's views
+# * should render contents of 'first/in_first' when rendering 'third/in_first
+# * should render contents of 'second/in_second' when rendering 'third/in_second
+# * should render contents of 'second/in_first_and_second' when rendering 'third/in_first_and_second
+# * should render contents of 'third/in_all' when rendering 'third/in_all
+# * should render parent views when <%= render_parent %> is in the view
+# * should raise error when rendering fourth/in_third, as 'fourth' is not in inherit_view_paths
+# * should raise error when rendering third/not_there, as the file 'not_there' is not present
+# render_parent in ActionView
+# * should render the parent view of @current_render when render_parent called
+# * should raise ArgunmentError if called when controller.inherit_views? is false
+# * should raise InheritedFileNotFound error if there is no parent view
+# find_inherited_template_path in ActionController (where inherit_view_paths == ['third', 'second', 'first'])
+# * should return first/in_first for third/in_first
+# * should return second/in_second for third/in_second
+# * should return third/in_all for third/in_all
+# * should return nil for third/not_there
+# * should return nil for fourth/in_third

@@ -1,5 +1,5 @@
 module Ardes#:nodoc:
-  # Allow your controllers to inherit thier views from parent controllers, or from
+  # Allow your controllers to inherit their views from parent controllers, or from
   # specified view paths.
   #
   # === Example
@@ -30,7 +30,7 @@ module Ardes#:nodoc:
   # If your controller inherits from a controller with inherit_views then that controller
   # gets the inherited view paths as well.
   #
-  #   class FooController < ApplciationController
+  #   class FooController < ApplicationController
   #     inherit_views 'far', 'faz'   # will look for views in 'foo', then 'far', then 'faz'
   #   end
   #
@@ -86,6 +86,8 @@ module Ardes#:nodoc:
         end
         
         # Return the inherit view paths, in order of self to ancestor
+        #
+        # Takes inherit_view_paths from the superclass when first read, and prepends the current controller_path
         def inherit_view_paths
           instance_variable_get('@inherit_view_paths') || instance_variable_set('@inherit_view_paths', [controller_path] + (superclass.inherit_view_paths rescue []))
         end
@@ -101,9 +103,7 @@ module Ardes#:nodoc:
       module InstanceMethods
         def self.included(base)#:nodoc:
           base.send :hide_action, *public_instance_methods
-          base.class_eval do
-            alias_method_chain :render_file, :inherit_views
-          end
+          base.send :alias_method_chain, :render_file, :inherit_views
         end
         
         # Return true if the controller is inheriting views
@@ -116,11 +116,25 @@ module Ardes#:nodoc:
           self.class.inherit_view_paths
         end
         
+        # intercepts render_file and looks for an inherited template_path, if appropriate
+        def render_file_with_inherit_views(template_path, status = nil, use_full_path = false, locals = {})
+          if use_full_path and inherit_views? and found_path = find_inherited_template_path(template_path)
+            template_path = found_path
+          end
+          render_file_without_inherit_views(template_path, status, use_full_path, locals)
+        end
+
         # given a template_path, returns the first existing template_path in parent inherit paths.
         # If +include_self+ is false, the search does not include the passed template_path
         #
         # If one cannot be found, then nil is returned
         def find_inherited_template_path(template_path, include_self = true)
+          _find_inherited_template_path(template_path, include_self)
+        end
+        
+      protected
+        # this method is here so that it can be cached - caching requires fixed arity of method signature
+        def _find_inherited_template_path(template_path, include_self)
           if inherit_path = inherit_view_paths.find {|p| template_path =~ /^#{p}\//}
             paths = inherit_view_paths.slice(inherit_view_paths.index(inherit_path) + (include_self ? 0 : 1)..-1)
             if found_path = paths.find {|p| @template.file_exists?(template_path.sub(/^#{inherit_path}/, p))}
@@ -128,14 +142,6 @@ module Ardes#:nodoc:
             end
           end
           nil
-        end
-        
-        # intercepts render_file and looks for an inherited template_path, if appropriate
-        def render_file_with_inherit_views(template_path, status = nil, use_full_path = false, locals = {})
-          if use_full_path and inherit_views? and found_path = find_inherited_template_path(template_path)
-            template_path = found_path
-          end
-          render_file_without_inherit_views(template_path, status, use_full_path, locals)
         end
       end
     end

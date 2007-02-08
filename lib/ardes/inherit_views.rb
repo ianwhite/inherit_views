@@ -59,7 +59,8 @@ module Ardes#:nodoc:
     # raised when an inherited file cannot be found, and one is required (e.g. in render_parent)
     class InheritedFileNotFound < RuntimeError; end
     
-    # extension for ActionController::Base which enables inherit_views
+    # extension for ActionController::Base which enables inherit_views, this module is extended into
+    # ActionController::Base
     module ActionController
       # Specify this to have your controller inherit its views from the specified path
       # or the current controller's default path if no argument is given
@@ -73,13 +74,13 @@ module Ardes#:nodoc:
           self.inherit_view_paths = paths if paths.size > 0
         end
       end
+
+      # Return true if the controller is inheriting views
+      def inherit_views?
+        !!read_inheritable_attribute('inherit_views')
+      end        
       
       module ClassMethods
-        # Return true if the controller is inheriting views
-        def inherit_views?
-          !!read_inheritable_attribute('inherit_views')
-        end        
-
         # Instruct the controller that it is not inheriting views
         def inherit_views=(bool)
           write_inheritable_attribute('inherit_views', !!bool)
@@ -146,7 +147,7 @@ module Ardes#:nodoc:
       end
     end
     
-    # Mixin for ActionView to enable inherit views functionality.  This module should be
+    # Mixin for ActionView to enable inherit views functionality.  This module is
     # included into ActionView::Base
     #
     # +render_file+ is modified so that it picks an inherited file to render

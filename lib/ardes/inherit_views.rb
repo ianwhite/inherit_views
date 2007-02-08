@@ -74,12 +74,12 @@ module Ardes#:nodoc:
         end
       end
       
-      # Return true if the controller is inheriting views
-      def inherit_views?
-        !!read_inheritable_attribute('inherit_views')
-      end        
-      
       module ClassMethods
+        # Return true if the controller is inheriting views
+        def inherit_views?
+          !!read_inheritable_attribute('inherit_views')
+        end        
+
         # Instruct the controller that it is not inheriting views
         def inherit_views=(bool)
           write_inheritable_attribute('inherit_views', !!bool)
@@ -160,7 +160,7 @@ module Ardes#:nodoc:
       # Renders the parent template for the current template
       # takes normal rendering options (:layout, :locals, etc)
       def render_parent(options = {})
-        raise ArgumentError, 'render_parent requires controller.inherit_views?' unless controller.inherit_views?
+        raise ArgumentError, 'render_parent requires controller.inherit_views?' unless (controller.inherit_views? rescue false)
         if template_path = controller.find_inherited_template_path(@current_render, include_self = false)
           render(options.merge(:file => template_path, :use_full_path => true))
         else
@@ -172,7 +172,7 @@ module Ardes#:nodoc:
       # the template currently being rendered
       def render_file_with_inherit_views(template_path, use_full_path = true, local_assigns = {})
         saved = @current_render
-        if use_full_path and controller.inherit_views? and found_path = controller.find_inherited_template_path(template_path) 
+        if use_full_path and (controller.inherit_views? rescue false) and found_path = controller.find_inherited_template_path(template_path) 
           template_path = found_path
         end
         @current_render = template_path

@@ -39,7 +39,7 @@ module Ardes#:nodoc:
   #   end
   #
   # If you want to turn off inherited views for a controller that has inherit_views in its
-  # ancestors use has_inherited_views=
+  # ancestors use self.inherit_views=
   #
   #   class BarController < FooController
   #     self.inherit_views = false

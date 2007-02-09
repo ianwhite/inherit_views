@@ -69,6 +69,7 @@ module Ardes#:nodoc:
           unless included_modules.include? ::Ardes::InheritViews::ActionController::InstanceMethods
             extend ClassMethods
             include InstanceMethods
+            include CachedInheritedTemplatePaths if ENV['RAILS_ENV'] == 'production'
           end
           self.inherit_views = true
           self.inherit_view_paths = paths if paths.size > 0
@@ -130,12 +131,6 @@ module Ardes#:nodoc:
         #
         # If one cannot be found, then nil is returned
         def find_inherited_template_path(template_path, include_self = true)
-          _find_inherited_template_path(template_path, include_self)
-        end
-        
-      protected
-        # this method is here so that it can be cached - caching requires fixed arity of method signature
-        def _find_inherited_template_path(template_path, include_self)
           if inherit_path = inherit_view_paths.find {|p| template_path =~ /^#{p}\//}
             paths = inherit_view_paths.slice(inherit_view_paths.index(inherit_path) + (include_self ? 0 : 1)..-1)
             if found_path = paths.find {|p| @template.file_exists?(template_path.sub(/^#{inherit_path}/, p))}
@@ -143,6 +138,26 @@ module Ardes#:nodoc:
             end
           end
           nil
+        end
+      end
+      
+      # This module is included into inherit_views controllers in production mode.  It's purpose is
+      # to cache the calls to find_inherited_template_path, so that the file system is not relentlessly
+      # queried to find the inherited template_path.
+      module CachedInheritedTemplatePaths
+        def self.included(base)#:nodoc:
+          base.class_eval do
+            class<<self
+              def inherited_template_paths_cache
+                @inherited_template_paths_cache ||= {}
+              end
+            end
+            alias_method_chain :find_inherited_template_path, :cache
+          end
+        end
+        
+        def find_inherited_template_path_with_cache(template_path, include_self = true)
+          self.class.inherited_template_paths_cache[[template_path, include_self]] ||= find_inherited_template_path_without_cache(template_path, include_self)
         end
       end
     end

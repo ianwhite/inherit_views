@@ -53,3 +53,36 @@ context "find_inherited_template_path in ActionController (where inherit_view_pa
     @controller.find_inherited_template_path('fourth/in_third').should == nil
   end
 end
+
+context "InheritViews controllers in production mode" do  
+  setup do
+    @controller = ProductionModeController.new
+    @other_controller = OtherProductionModeController.new
+    ProductionModeController.instance_variable_set('@inherited_template_paths_cache', nil) # clear the cache each time
+    OtherProductionModeController.instance_variable_set('@inherited_template_paths_cache', nil)
+  end
+  
+  specify "should have inherited_template_paths_cache" do
+    ProductionModeController.should_respond_to :inherited_template_paths_cache
+  end
+  
+  specify "should cache calls to find_inherited_template_path" do
+    @controller.should_receive(:find_inherited_template_path_without_cache).with('foo/bar', true).once.and_return('baz')
+    @controller.find_inherited_template_path('foo/bar', true).should == 'baz'
+    @controller.find_inherited_template_path('foo/bar', true).should == 'baz'
+  end
+  
+  specify "should maintain different caches in different classes" do
+    @controller.should_receive(:find_inherited_template_path_without_cache).with('foo/bar', true).once.and_return('baz')
+    @other_controller.should_receive(:find_inherited_template_path_without_cache).with('foo/bar', true).once.and_return('BAZ')
+    
+    @controller.find_inherited_template_path('foo/bar', true).should == 'baz'
+    @controller.find_inherited_template_path('foo/bar', true).should == 'baz'
+    
+    @other_controller.find_inherited_template_path('foo/bar', true).should == 'BAZ'
+    @other_controller.find_inherited_template_path('foo/bar', true).should == 'BAZ'
+    
+    ProductionModeController.inherited_template_paths_cache.should == {['foo/bar', true] => 'baz'}
+    OtherProductionModeController.inherited_template_paths_cache.should == {['foo/bar', true] => 'BAZ'}
+  end
+end

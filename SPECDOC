@@ -52,3 +52,7 @@
 # * should return third/in_all for third/in_all
 # * should return nil for third/not_there
 # * should return nil for fourth/in_third
+# InheritViews controllers in production mode
+# * should have inherited_template_paths_cache
+# * should cache calls to find_inherited_template_path
+# * should maintain different caches in different classes

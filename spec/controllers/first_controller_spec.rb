@@ -20,7 +20,7 @@ context "A new FirstController" do
   end
   
   specify "should have inherit view paths == ['first']" do
-    @controller.inherit_view_paths.should == ['first']
+    @controller.class.inherit_view_paths.should == ['first']
   end
 end
 

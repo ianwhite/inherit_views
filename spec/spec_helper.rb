@@ -50,3 +50,15 @@ class ThirdController < SecondController
   def render_parent; end
 end
   
+# These are created in production mode to test caching
+ENV["RAILS_ENV"] = 'production'
+
+class ProductionModeController < TestController
+  inherit_views
+end
+
+class OtherProductionModeController < ProductionModeController
+end
+
+# back to test mode
+ENV['RAILS_ENV'] = 'test'

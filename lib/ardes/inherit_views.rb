@@ -182,7 +182,6 @@ module Ardes#:nodoc:
     module ActionView
       def self.included(base)# :nodoc:
         base.send :alias_method_chain, :render_file, :inherit_views
-        base.send :alias_method_chain, :render, :inherit_views
       end
 
       # Renders the parent template for the current template

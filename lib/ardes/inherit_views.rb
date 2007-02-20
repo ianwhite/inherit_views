@@ -69,7 +69,7 @@ module Ardes#:nodoc:
           unless included_modules.include? ::Ardes::InheritViews::ActionController::InstanceMethods
             extend ClassMethods
             include InstanceMethods
-            include CachedInheritedTemplatePaths if ENV['RAILS_ENV'] == 'production'
+            extend CachedInheritedTemplatePaths if ENV['RAILS_ENV'] == 'production'
           end
           self.inherit_views = true
           self.inherit_view_paths = paths if paths.size > 0
@@ -99,6 +99,16 @@ module Ardes#:nodoc:
         # The controller_path for self is always prepended to the front, no matter what the arguments
         def inherit_view_paths=(paths)
           instance_variable_set('@inherit_view_paths', [controller_path] + (paths - [controller_path]))
+        end
+        
+        def find_inherited_template_path_in(template, template_path, include_self = true)
+          if inherit_path = inherit_view_paths.find {|p| template_path =~ /^#{p}\//}
+            paths = inherit_view_paths.slice(inherit_view_paths.index(inherit_path) + (include_self ? 0 : 1)..-1)
+            if found_path = paths.find {|p| template.file_exists?(template_path.sub(/^#{inherit_path}/, p))}
+              return template_path.sub(/^#{inherit_path}/, found_path)
+            end
+          end
+          nil
         end
       end
       
@@ -131,13 +141,7 @@ module Ardes#:nodoc:
         #
         # If one cannot be found, then nil is returned
         def find_inherited_template_path(template_path, include_self = true)
-          if inherit_path = inherit_view_paths.find {|p| template_path =~ /^#{p}\//}
-            paths = inherit_view_paths.slice(inherit_view_paths.index(inherit_path) + (include_self ? 0 : 1)..-1)
-            if found_path = paths.find {|p| @template.file_exists?(template_path.sub(/^#{inherit_path}/, p))}
-              return template_path.sub(/^#{inherit_path}/, found_path)
-            end
-          end
-          nil
+          self.class.find_inherited_template_path_in(@template, template_path, include_self)
         end
       end
       
@@ -145,19 +149,20 @@ module Ardes#:nodoc:
       # to cache the calls to find_inherited_template_path, so that the file system is not relentlessly
       # queried to find the inherited template_path.
       module CachedInheritedTemplatePaths
-        def self.included(base)#:nodoc:
+        def self.extended(base)#:nodoc:
           base.class_eval do
             class<<self
-              def inherited_template_paths_cache
-                @inherited_template_paths_cache ||= {}
-              end
+              alias_method_chain :find_inherited_template_path_in, :cache
             end
-            alias_method_chain :find_inherited_template_path, :cache
           end
         end
         
-        def find_inherited_template_path_with_cache(template_path, include_self = true)
-          self.class.inherited_template_paths_cache[[template_path, include_self]] ||= find_inherited_template_path_without_cache(template_path, include_self)
+        def inherited_template_paths_cache
+          instance_variable_get('@inherited_template_paths_cache') || instance_variable_set('@inherited_template_paths_cache', {})
+        end
+          
+        def find_inherited_template_path_in_with_cache(template, template_path, include_self = true)
+          inherited_template_paths_cache[[template_path, include_self]] ||= find_inherited_template_path_in_without_cache(template, template_path, include_self)
         end
       end
     end
@@ -172,17 +177,18 @@ module Ardes#:nodoc:
     # Those familiar with the internals of ActionView will know that the <tt>@first_render</tt>
     # instance var is used to keep track of what is the 'root' template being rendered.  A similar
     # variable <tt>@current_render</tt> is introduced to keep track of the filename of the currently rendered
-    # file.  This enables +render_parent+ to know which file render.
+    # file.  This enables +render_parent+ to know which to file render.
     #
     module ActionView
       def self.included(base)# :nodoc:
         base.send :alias_method_chain, :render_file, :inherit_views
+        base.send :alias_method_chain, :render, :inherit_views
       end
 
       # Renders the parent template for the current template
       # takes normal rendering options (:layout, :locals, etc)
       def render_parent(options = {})
-        raise ArgumentError, 'render_parent requires controller.inherit_views?' unless (controller.inherit_views? rescue false)
+        raise ArgumentError, 'render_parent requires that controller inherit_views' unless (controller.inherit_views? rescue false)
         if template_path = controller.find_inherited_template_path(@current_render, include_self = false)
           render(options.merge(:file => template_path, :use_full_path => true))
         else
@@ -201,6 +207,12 @@ module Ardes#:nodoc:
         render_file_without_inherit_views(template_path, use_full_path, local_assigns)
       ensure
         @current_render = saved
+      end
+      
+      # Find inherited template path for the given path, optionally pass a controller class 
+      # to find the inherited view for the passed controller class
+      def inherited_template_path(template_path, klass = controller.class)
+        klass.find_inherited_template_path_in(self, template_path)
       end
     end
   end  

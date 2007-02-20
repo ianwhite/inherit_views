@@ -67,22 +67,15 @@ context "InheritViews controllers in production mode" do
   end
   
   specify "should cache calls to find_inherited_template_path" do
-    @controller.should_receive(:find_inherited_template_path_without_cache).with('foo/bar', true).once.and_return('baz')
-    @controller.find_inherited_template_path('foo/bar', true).should == 'baz'
+    ProductionModeController.inherited_template_paths_cache[['foo/bar', true]] = 'baz'
     @controller.find_inherited_template_path('foo/bar', true).should == 'baz'
   end
   
   specify "should maintain different caches in different classes" do
-    @controller.should_receive(:find_inherited_template_path_without_cache).with('foo/bar', true).once.and_return('baz')
-    @other_controller.should_receive(:find_inherited_template_path_without_cache).with('foo/bar', true).once.and_return('BAZ')
+    ProductionModeController.inherited_template_paths_cache[['foo/bar', true]] = 'baz'
+    OtherProductionModeController.inherited_template_paths_cache[['foo/bar', true]] = 'BAZ'
     
     @controller.find_inherited_template_path('foo/bar', true).should == 'baz'
-    @controller.find_inherited_template_path('foo/bar', true).should == 'baz'
-    
     @other_controller.find_inherited_template_path('foo/bar', true).should == 'BAZ'
-    @other_controller.find_inherited_template_path('foo/bar', true).should == 'BAZ'
-    
-    ProductionModeController.inherited_template_paths_cache.should == {['foo/bar', true] => 'baz'}
-    OtherProductionModeController.inherited_template_paths_cache.should == {['foo/bar', true] => 'BAZ'}
   end
 end

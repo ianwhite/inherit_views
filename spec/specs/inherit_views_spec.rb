@@ -26,6 +26,22 @@ module InheritViewsSpec
     end
   end
   
+  describe "ActionView#inherited_template_path" do
+    before(:each) do
+      @controller = ThirdController.new
+      @view = ActionView::Base.new(@controller.view_paths, {}, @controller)
+      @controller.instance_variable_set('@template', @view)
+    end
+
+    it "should return third/in_second when called with second/in_second (without controller class)" do
+      @view.inherited_template_path('third/in_second').should == 'second/in_second'
+    end
+    
+    it "should return nil when called with third/in_second (with controller class specified as FirstController)" do
+      @view.inherited_template_path('third/in_second', FirstController).should == nil
+    end
+  end
+  
   describe "ActionController#find_inherited_template_path (where inherit_view_paths == ['third', 'second', 'first'])" do
     before(:each) do
       @controller = ThirdController.new

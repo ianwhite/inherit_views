@@ -1,3 +1,5 @@
+# TODO: specs could be better: write better examples, with descriptive names 
+# rather than 'first', 'second' etc...
 module InheritViewsSpec
   class TestController < ActionController::Base
     self.view_paths = [File.dirname(__FILE__) + '/fixtures/views']

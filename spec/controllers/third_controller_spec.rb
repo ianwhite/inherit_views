@@ -49,9 +49,10 @@ module InheritViewsSpec
   describe "A ThirdController's views" do
     controller_name "inherit_views_spec/third"
   
-    before(:each) do
+    before do
       @view = ActionView::Base.new(@controller.view_paths, {}, @controller)
       @controller.instance_variable_set('@template', @view)
+      get :none # set up request
     end
   
     it "should render contents of 'first/in_first' when rendering 'third/in_first" do

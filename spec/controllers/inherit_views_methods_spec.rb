@@ -3,10 +3,12 @@ require File.expand_path(File.join(File.dirname(__FILE__), '../app'))
 
 module InheritViewsSpec
   describe "ActionView#render_parent" do
+    controller_name "inherit_views_spec/third"
+
     before(:each) do
-      @controller = ThirdController.new
       @view = ActionView::Base.new(@controller.view_paths, {}, @controller)
       @controller.instance_variable_set('@template', @view)
+      get :none # set up request
     end
     
     it "should render the parent view of @current_render when render_parent called" do
@@ -27,10 +29,12 @@ module InheritViewsSpec
   end
   
   describe "ActionView#inherited_template_path" do
+    controller_name "inherit_views_spec/third"
+    
     before(:each) do
-      @controller = ThirdController.new
       @view = ActionView::Base.new(@controller.view_paths, {}, @controller)
       @controller.instance_variable_set('@template', @view)
+      get :none # set up request
     end
 
     it "should return third/in_second when called with second/in_second (without controller class)" do
@@ -43,10 +47,12 @@ module InheritViewsSpec
   end
   
   describe "ActionController#find_inherited_template_path (where inherit_view_paths == ['third', 'second', 'first'])" do
-    before(:each) do
-      @controller = ThirdController.new
+    controller_name "inherit_views_spec/third"
+    
+    before do
       @view = ActionView::Base.new(@controller.view_paths, {}, @controller)
       @controller.instance_variable_set('@template', @view)
+      get :none # set up request
     end
   
     it "should return first/in_first for third/in_first" do
@@ -71,8 +77,9 @@ module InheritViewsSpec
   end
 
   describe "InheritViews controllers in production mode" do  
+    controller_name "inherit_views_spec/production_mode"
+    
     before do
-      @controller = ProductionModeController.new
       @other_controller = OtherProductionModeController.new
     end
     

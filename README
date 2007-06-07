@@ -1,3 +1,5 @@
+{Ardes plugins}[http://plugins.ardes.com] > {Documentation}[http://plugins.ardes.com/doc] > inherit_views
+
 = inherit_views
 
 This plugin allows your controllers to inherit their views from parent controllers.  The default behaviour is to inherit along the ancestor path of the controller, but you can also specify custom inherit view paths to search.

@@ -12,27 +12,6 @@ FirstController views
 - should raise error when rendering second/in_first, as 'second' is not in inherit_view_paths
 - should raise error when rendering first/not_there, as the file 'not_there' is not present
 
-ActionView#render_parent for ThirdController
-- should render the parent view of @current_render when render_parent called
-- should raise ArgunmentError if called when controller.inherit_views? is false
-- should raise InheritedFileNotFound error if there is no parent view
-
-ActionView#inherited_template_path for ThirdController
-- should return third/in_second when called with second/in_second (without controller class)
-- should return nil when called with third/in_second (with controller class specified as FirstController)
-
-ActionController#find_inherited_template_path for ThirdController
-- should return first/in_first for third/in_first
-- should return second/in_second for third/in_second
-- should return third/in_all for third/in_all
-- should return nil for third/not_there
-- should return nil for fourth/in_third
-
-InheritViews controllers in production mode
-- should have inherited_template_paths_cache
-- should cache calls to find_inherited_template_path
-- should maintain different caches in different classes
-
 SecondController class (a controller with: inherit_views 'first')
 - should inherit_views
 - should have inherit view paths == ['second', 'first']
@@ -75,6 +54,27 @@ ThirdController views
 - should raise error when rendering fourth/in_third, as 'fourth' is not in inherit_view_paths
 - should raise error when rendering third/not_there, as the file 'not_there' is not present
 
-Finished in 0.228614 seconds
+ThirdController#find_inherited_template_path
+- should return first/in_first for third/in_first
+- should return second/in_second for third/in_second
+- should return third/in_all for third/in_all
+- should return nil for third/not_there
+- should return nil for fourth/in_third
+
+ActionView#render_parent
+- should render the parent view of @current_render when render_parent called
+- should raise ArgunmentError if called when controller.inherit_views? is false
+- should raise InheritedFileNotFound error if there is no parent view
+
+ActionView#inherited_template_path
+- should return third/in_second when called with second/in_second (without controller class)
+- should return nil when called with third/in_second (with controller class specified as FirstController)
+
+InheritViews controllers in production mode
+- should have inherited_template_paths_cache
+- should cache calls to find_inherited_template_path
+- should maintain different caches in different classes
+
+Finished in 0.220499 seconds
 
 46 examples, 0 failures

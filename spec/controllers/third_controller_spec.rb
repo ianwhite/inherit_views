@@ -44,7 +44,7 @@ describe ThirdController, " views" do
   before do
     @view = ActionView::Base.new(@controller.view_paths, {}, @controller)
     @controller.instance_variable_set('@template', @view)
-    get :none # set up request
+    @view.stub!(:template_format).and_return(:html)
   end
 
   it "should render contents of 'first/in_first' when rendering 'third/in_first" do

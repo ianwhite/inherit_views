@@ -38,8 +38,7 @@ namespace :spec do
   desc "Generate specdoc for #{plugin_name}"
   Spec::Rake::SpecTask.new(:doc) do |t|
     t.spec_files  = FileList['spec/**/*_spec.rb']
-    t.spec_opts   = ["--format", "specdoc"]
-    t.out         = 'SPECDOC'
+    t.spec_opts   = ["--format", "specdoc:SPECDOC"]
   end
 
   namespace :doc do

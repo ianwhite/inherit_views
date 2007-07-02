@@ -6,6 +6,5 @@ require 'spec/rails'
 
 Spec::Runner.configure do |config|
   config.before(:each, :behaviour_type => :controller) do
-    raise_controller_errors
   end
 end

@@ -98,7 +98,8 @@ module Ardes#:nodoc:
         #
         # The controller_path for self is always prepended to the front, no matter what the arguments
         def inherit_view_paths=(paths)
-          instance_variable_set('@inherit_view_paths', [controller_path] + (paths - [controller_path]))
+          inherited = inherit_view_paths - paths - [controller_path]
+          instance_variable_set('@inherit_view_paths', [controller_path] + ((paths - [controller_path]) + inherited))
         end
         
         def find_inherited_template_path_in(template, template_path, include_self = true)

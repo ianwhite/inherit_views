@@ -34,6 +34,10 @@ class ThirdController < SecondController
   def render_parent; end
 end
 
+class FourthController < FirstController
+  inherit_views 'other'
+end
+
 # These are created in production mode to test caching
 ENV["RAILS_ENV"] = 'production'
 

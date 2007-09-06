@@ -1,0 +1,3 @@
+* BC Alert!  inherit_views has changed to keep up with edge rails internals.
+  If you're using latest Edge, no problems.  If you're using < 7413 then freeze
+  to r390 of inherit_views

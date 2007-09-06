@@ -25,12 +25,12 @@ describe SecondController, " actions" do
   integrate_views
 
   it "should render first/in_first when GETing :in_first" do
-    @controller.should_receive(:render_file_without_inherit_views).with('first/in_first', nil, true, {})
+    @controller.should_receive(:render_for_file_without_inherit_views).with('first/in_first', nil, true, {})
     get :in_first
   end
 
   it "should render second/in_second when GETing :in_second" do
-    @controller.should_receive(:render_file_without_inherit_views).with('second/in_second', nil, true, {})
+    @controller.should_receive(:render_for_file_without_inherit_views).with('second/in_second', nil, true, {})
     get :in_second
   end
 end

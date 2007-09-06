@@ -116,7 +116,7 @@ module Ardes#:nodoc:
       module InstanceMethods
         def self.included(base)#:nodoc:
           base.send :hide_action, *public_instance_methods
-          base.send :alias_method_chain, :render_file, :inherit_views
+          base.send :alias_method_chain, :render_for_file, :inherit_views
         end
         
         # Return true if the controller is inheriting views
@@ -130,11 +130,11 @@ module Ardes#:nodoc:
         end
         
         # intercepts render_file and looks for an inherited template_path, if appropriate
-        def render_file_with_inherit_views(template_path, status = nil, use_full_path = false, locals = {})
+        def render_for_file_with_inherit_views(template_path, status = nil, use_full_path = false, locals = {})
           if use_full_path and inherit_views? and found_path = find_inherited_template_path(template_path)
             template_path = found_path
           end
-          render_file_without_inherit_views(template_path, status, use_full_path, locals)
+          render_for_file_without_inherit_views(template_path, status, use_full_path, locals)
         end
 
         # given a template_path, returns the first existing template_path in parent inherit paths.

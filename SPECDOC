@@ -83,6 +83,6 @@ InheritViews controllers in production mode
 - should cache calls to find_inherited_template_path
 - should maintain different caches in different classes
 
-Finished in 0.17399 seconds
+Finished in 0.308722 seconds
 
 50 examples, 0 failures

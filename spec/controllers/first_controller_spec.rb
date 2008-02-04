@@ -1,10 +1,8 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '../spec_helper'))
 require File.expand_path(File.join(File.dirname(__FILE__), '../app'))
 
-describe FirstController, ' class (a controller with: inherit_views)' do
-  it "should inherit_views" do
-    FirstController.should be_inherit_views
-  end
+describe FirstController, " < TestController; inherit_views" do
+  it { FirstController.should be_inherit_views }
 
   it "should have inherit view paths == ['first']" do
     FirstController.inherit_view_paths.should == ['first']
@@ -12,31 +10,36 @@ describe FirstController, ' class (a controller with: inherit_views)' do
 end
 
 describe FirstController do
-  it "should inherit_views" do
-    @controller.should be_inherit_views
-  end
+  integrate_views
+  
+  it { @controller.should be_inherit_views }
 
   it "should have inherit view paths == ['first']" do
     @controller.class.inherit_view_paths.should == ['first']
   end
-end
-
-describe FirstController, " views" do
-  before do
-    @view = ActionView::Base.new(@controller.view_paths, {}, @controller)
-    @controller.instance_variable_set('@template', @view)
-    @view.stub!(:template_format).and_return(:html)
+  
+  it "GET :in_all should render first/in_all" do
+    get :in_all
+    response.body.should == 'first:in_all'
   end
 
-  it "should render contents of 'first/in_all' when rendering 'first/in_all" do
-    @view.render(:file => 'first/in_all').should == '<first />'
+  it "GET :in_first should render first/in_first" do
+    get :in_first
+    response.body.should == 'first:in_first'
   end
 
-  it "should raise error when rendering second/in_first, as 'second' is not in inherit_view_paths" do
-    lambda { @view.render(:file => 'second/in_first')}.should raise_error(::ActionView::ActionViewError)
+  it "GET :in_first_and_second should render first/in_first_and_second" do
+    get :in_first_and_second
+    response.body.should == 'first:in_first_and_second'
   end
-
-  it "should raise error when rendering first/not_there, as the file 'not_there' is not present" do
-    lambda { @view.render(:file => 'first/not_there')}.should raise_error(::ActionView::ActionViewError)
+  
+  it "GET :render_parent should render first/render_parent" do
+    get :render_parent
+    response.body.should == 'first:render_parent'
+  end
+  
+  it "GET :inherited_template_path should render its contents" do
+    get :inherited_template_path
+    response.body.should == 'second/in_first_and_second'
   end
 end

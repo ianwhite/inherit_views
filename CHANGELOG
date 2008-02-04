@@ -1,3 +1,8 @@
+* Compatible with both Rails 2.0.x and beyond - uses the template.finder object
+  to find templates if that is available
+
+* Vastly improved readability of specs, and made them much more acceptance like
+
 * BC Alert!  inherit_views has changed to keep up with edge rails internals.
   If you're using latest Edge, no problems.  If you're using < 7413 then freeze
   to r390 of inherit_views

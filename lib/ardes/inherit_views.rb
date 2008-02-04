@@ -105,7 +105,11 @@ module Ardes#:nodoc:
         def find_inherited_template_path_in(template, template_path, include_self = true)
           if inherit_path = inherit_view_paths.find {|p| template_path =~ /^#{p}\//}
             paths = inherit_view_paths.slice(inherit_view_paths.index(inherit_path) + (include_self ? 0 : 1)..-1)
-            if found_path = paths.find {|p| template.file_exists?(template_path.sub(/^#{inherit_path}/, p))}
+
+            # BC: Rails > 2.0.x introduces template.finder, so we handle both cases
+            file_exists_method = template.respond_to?(:finder) ? template.finder.method(:file_exists?) : template.method(:file_exists?)
+
+            if found_path = paths.find {|p| file_exists_method.call(template_path.sub(/^#{inherit_path}/, p))}
               return template_path.sub(/^#{inherit_path}/, found_path)
             end
           end

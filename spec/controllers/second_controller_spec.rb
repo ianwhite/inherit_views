@@ -46,4 +46,9 @@ describe SecondController do
   it "GET :bad_render_parent should raise ActionView::TemplateError as there is no parent to render" do
     lambda { get :bad_render_parent }.should raise_error(ActionView::TemplateError, "no parent for second/bad_render_parent found")
   end
+  
+  it "GET :partial should render second/partial & second/_partial" do
+    get :partial
+    response.body.should == "second:partial\nsecond:_partial"
+  end
 end

@@ -47,4 +47,9 @@ describe ThirdController do
     get :render_parent
     response.body.should == "first:render_parent\nsecond:render_parent\nthird:render_parent"
   end
+  
+  it "GET :partial should render second/partial & third/_partial" do
+    get :partial
+    response.body.should == "second:partial\nthird:_partial"
+  end
 end

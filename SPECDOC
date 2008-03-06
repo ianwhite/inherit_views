@@ -33,6 +33,7 @@ SecondController
 - GET :in_all should render second/in_all
 - GET :render_parent should render first/render_parent inside second/render_parent
 - GET :bad_render_parent should raise ActionView::TemplateError as there is no parent to render
+- GET :partial should render second/partial & second/_partial
 
 ThirdController < SecondController
 - should be inherit views
@@ -47,12 +48,13 @@ ThirdController
 - GET :in_all should render third/in_all
 - GET :in_third shoudl render third/in_third
 - GET :render_parent should render first/render_parent inside second/render_parent inside third/render_parent
+- GET :partial should render second/partial & third/_partial
 
 InheritViews controllers in production mode
 - should have inherited_template_paths_cache
 - should cache calls to find_inherited_template_path
 - should maintain different caches in different classes
 
-Finished in 0.143867 seconds
+Finished in 0.47447 seconds
 
-36 examples, 0 failures
+38 examples, 0 failures

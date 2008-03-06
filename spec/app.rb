@@ -23,6 +23,7 @@ class SecondController < InheritViewsTestController
   def in_all; end
   def render_parent; end
   def bad_render_parent; end
+  def partial; end
 end
 
 class ThirdController < SecondController

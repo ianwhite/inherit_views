@@ -51,4 +51,9 @@ describe SecondController do
     get :partial
     response.body.should == "second:partial\nsecond:_partial"
   end
+  
+  it "GET :partial2 should render second/partial2 & second/_partial2" do
+    get :partial2
+    response.body.should == "second:partial2\nsecond:_partial2"
+  end
 end

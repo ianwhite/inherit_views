@@ -34,6 +34,7 @@ SecondController
 - GET :render_parent should render first/render_parent inside second/render_parent
 - GET :bad_render_parent should raise ActionView::TemplateError as there is no parent to render
 - GET :partial should render second/partial & second/_partial
+- GET :partial2 should render second/partial2 & second/_partial2
 
 ThirdController < SecondController
 - should be inherit views
@@ -49,12 +50,18 @@ ThirdController
 - GET :in_third shoudl render third/in_third
 - GET :render_parent should render first/render_parent inside second/render_parent inside third/render_parent
 - GET :partial should render second/partial & third/_partial
+- GET :partial2 should render second/partial2 & second/_partial2 (ERROR - 1)
 
 InheritViews controllers in production mode
 - should have inherited_template_paths_cache
 - should cache calls to find_inherited_template_path
 - should maintain different caches in different classes
 
-Finished in 0.47447 seconds
+1)
+ActionView::TemplateError in 'ThirdController GET :partial2 should render second/partial2 & second/_partial2'
+Couldn't find template file for third/_partial2 in ["/Users/ian/Development/rails_plugins/test_app/edge/vendor/plugins/inherit_views/spec/fixtures/views"]
 
-38 examples, 0 failures
+
+Finished in 0.245877 seconds
+
+40 examples, 1 failure

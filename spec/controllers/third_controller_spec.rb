@@ -52,4 +52,9 @@ describe ThirdController do
     get :partial
     response.body.should == "second:partial\nthird:_partial"
   end
+  
+  it "FIXME: GET :partial2 should render second/partial2 & second/_partial2" do
+    #get :partial2
+    #response.body.should == "second:partial2\nsecond:_partial2"
+  end
 end

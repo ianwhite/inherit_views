@@ -1,67 +1,62 @@
 
-FirstController < TestController; inherit_views
+AController < TestController; inherit_views (the class)
 - should be inherit views
-- should have inherit view paths == ['first']
+- should have inherit view paths == ['a']
 
-FirstController
+AController < TestController; inherit_views (an instance)
 - should be inherit views
-- should have inherit view paths == ['first']
-- GET :in_all should render first/in_all
-- GET :in_first should render first/in_first
-- GET :in_first_and_second should render first/in_first_and_second
-- GET :render_parent should render first/render_parent
+- should have inherit view paths == ['a']
+- GET :in_abc should render a/in_abc
+- GET :in_a should render a/in_a
+- GET :in_ab should render a/in_ab
+- GET :render_parent should render a/render_parent
 - GET :inherited_template_path should render its contents
 
-FourthController < FirstController; inherit_views 'other'
+BController < TestController; inherit_views 'a' (the class)
 - should be inherit views
-- should have inherit view paths == ['fourth', 'other', 'first']
+- should have inherit view paths == ['b', 'a']
 
-FourthController
+BController < TestController; inherit_views 'a' (an instance)
 - should be inherit views
-- should have inherit view paths == ['fourth', 'other', 'first']
-
-SecondController < TestController; inherit_views 'first'
-- should be inherit views
-- should have inherit view paths == ['second', 'first']
-
-SecondController
-- should be inherit views
-- should have inherit view paths == ['second', 'first']
-- GET :in_first should render first/in_first
-- GET :in_first_and_second should render second/in_first_and_second
-- GET :in_second should render second/in_second
-- GET :in_all should render second/in_all
-- GET :render_parent should render first/render_parent inside second/render_parent
+- should have inherit view paths == ['b', 'a']
+- GET :in_first should render a/in_a
+- GET :in_ab should render b/in_ab
+- GET :in_b should render b/in_b
+- GET :in_abc should render b/in_abc
+- GET :render_parent should render a/render_parent inside b/render_parent
 - GET :bad_render_parent should raise ActionView::TemplateError as there is no parent to render
-- GET :partial should render second/partial & second/_partial
-- GET :partial2 should render second/partial2 & second/_partial2
+- GET :partial_in_bc should render b/partial_in_bc & b/_partial_in_bc
+- GET :partial_in_b should render b/partial_in_b & b/_partial_in_b
 
-ThirdController < SecondController
+CController < BController (the class)
 - should be inherit views
-- should have inherit view paths == ['third', 'second', 'first']
+- should have inherit view paths == ['c', 'b', 'a']
 
-ThirdController
+CController < BController (an instance)
 - should be inherit views
-- should have inherit view paths == ['third', 'first']
-- GET :in_first should render first/in_first
-- GET :in_first_and_second should render second/in_first_and_second
-- GET :in_second should render second/in_second
-- GET :in_all should render third/in_all
-- GET :in_third shoudl render third/in_third
-- GET :render_parent should render first/render_parent inside second/render_parent inside third/render_parent
-- GET :partial should render second/partial & third/_partial
-- GET :partial2 should render second/partial2 & second/_partial2 (ERROR - 1)
+- should have inherit view paths == ['c', 'b', 'a']
+- GET :in_a should render a/in_a
+- GET :in_ab should render b/in_ab
+- GET :in_b should render b/in_b
+- GET :in_abc should render c/in_abc
+- GET :in_c should render c/in_c
+- GET :render_parent should render a/render_parent inside b/render_parent inside c/render_parent
+- GET :partial_in_bc should render b/partial_in_bc then c/_partial_in_bc
+- FIXME: GET :partial_in_b should render b/partial_in_b & b/_partial_in_b
+
+DController < AController; inherit_views 'other' (the class)
+- should be inherit views
+- should have inherit view paths == ['d', 'other', 'a']
+
+DController < AController; inherit_views 'other' (an instance)
+- should be inherit views
+- should have inherit view paths == ['d', 'other', 'a']
 
 InheritViews controllers in production mode
 - should have inherited_template_paths_cache
 - should cache calls to find_inherited_template_path
 - should maintain different caches in different classes
 
-1)
-ActionView::TemplateError in 'ThirdController GET :partial2 should render second/partial2 & second/_partial2'
-Couldn't find template file for third/_partial2 in ["/Users/ian/Development/rails_plugins/test_app/edge/vendor/plugins/inherit_views/spec/fixtures/views"]
+Finished in 0.240495 seconds
 
-
-Finished in 0.245877 seconds
-
-40 examples, 1 failure
+40 examples, 0 failures

@@ -42,7 +42,7 @@ CController < BController (an instance)
 - GET :in_c should render c/in_c
 - GET :render_parent should render a/render_parent inside b/render_parent inside c/render_parent
 - GET :partial_in_bc should render b/partial_in_bc then c/_partial_in_bc
-- FIXME: GET :partial_in_b should render b/partial_in_b & b/_partial_in_b
+- GET :partial_in_b should render b/partial_in_b & b/_partial_in_b
 
 DController < AController; inherit_views 'other' (the class)
 - should be inherit views
@@ -57,6 +57,6 @@ InheritViews controllers in production mode
 - should cache calls to find_inherited_template_path
 - should maintain different caches in different classes
 
-Finished in 0.240495 seconds
+Finished in 0.252411 seconds
 
 40 examples, 0 failures

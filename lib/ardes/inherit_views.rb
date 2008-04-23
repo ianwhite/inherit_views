@@ -106,15 +106,24 @@ module Ardes#:nodoc:
           if inherit_path = inherit_view_paths.find {|p| template_path =~ /^#{p}\//}
             paths = inherit_view_paths.slice(inherit_view_paths.index(inherit_path) + (include_self ? 0 : 1)..-1)
             
-            # BC: Rails > 2.0.2 introduces template.finder, so we handle both cases
-            # TODO - make a shortcutting method for this
-            file_exists_method = template.respond_to?(:finder) ? template.finder.method(:file_exists?) : template.method(:file_exists?)
-
-            if found_path = paths.find {|p| file_exists_method.call(template_path.sub(/^#{inherit_path}/, p))}
+            if found_path = paths.find {|p| file_exists_in_template?(template, template_path.sub(/^#{inherit_path}/, p))}
               return template_path.sub(/^#{inherit_path}/, found_path)
             end
           end
           nil
+        end
+        
+        # BC: Rails > 2.0.2 introduces template.finder, so we handle both cases
+        # Unfortunately this reduces coverage, by necessity only one of these branches can
+        # be covered in one test run.  No biggie.
+        if defined?(ActionView::TemplateFinder)
+          def file_exists_in_template?(template, path)
+            template.finder.file_exists?(path)
+          end
+        else
+          def file_exists_in_template?(template, path)
+            template.file_exists?(path)
+          end
         end
       end
       
@@ -207,8 +216,8 @@ module Ardes#:nodoc:
       # Find an inherited template path prior to rendering, if appropriate.  Also sets @current_render = to
       # the template currently being rendered
       def render_file_with_inherit_views(template_path, use_full_path = true, local_assigns = {})
-        if use_full_path && (controller.inherit_views? rescue false)
-          template_path = controller.find_inherited_template_path(template_path) || template_path
+        if use_full_path && (controller.inherit_views? rescue false) && found_path = controller.find_inherited_template_path(template_path)
+          template_path = found_path
         end
         
         with_current_render_of template_path do
@@ -224,10 +233,6 @@ module Ardes#:nodoc:
       
     private
       def render_partial_with_inherit_views(partial_path, local_assigns = nil, deprecated_local_assigns = nil)
-        #puts "render_partial #{partial_path}"
-        #expanded_partial_path = "#{controller.controller_path}/_#{partial_path}"
-        #expanded_partial_path = find_inherited_template_path(expanded_partial_path)
-        #puts "Expanded: " + expanded_partial_path
         if found_path = controller.find_inherited_template_path("#{controller.controller_path}/_#{partial_path}")
           partial_path = found_path.sub("/_#{partial_path}", "/#{partial_path}")
         end
@@ -237,6 +242,7 @@ module Ardes#:nodoc:
         end
       end
       
+      # sets @current_render to argument for the duration of the passed block
       def with_current_render_of(path, &block)
         orig, @current_render = @current_render, path
         yield

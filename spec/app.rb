@@ -56,8 +56,8 @@ ENV['RAILS_ENV'] = 'test'
 
 
 # BC: This is created without ActionView::TemplateFinder existing
-orig_template_finder = ActionView::TemplateFinder
-ActionView.send :remove_const, :TemplateFinder
+orig_template_finder = (ActionView::TemplateFinder rescue nil)
+orig_template_finder && ActionView.send(:remove_const, :TemplateFinder)
 
 class NoTemplateFinderController < InheritViewsTestController
   inherit_views
@@ -71,6 +71,7 @@ class WithTemplateFinderController < InheritViewsTestController
 end
 
 # revert back to whatever ActionView::TemplateFinder is
-ActionView.send :remove_const, :TemplateFinder
-orig_template_finder && ActionView::TemplateFinder = orig_template_finder
-
+if orig_template_finder
+  ActionView.send :remove_const, :TemplateFinder
+  ActionView::TemplateFinder = orig_template_finder
+end

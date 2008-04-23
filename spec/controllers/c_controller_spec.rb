@@ -54,9 +54,9 @@ describe CController, " < BController" do
       response.body.should == "b:partial_in_bc => c:_partial_in_bc"
     end
   
-    it "FIXME: GET :partial_in_b should render b/partial_in_b & b/_partial_in_b" do
-      #get :partial_in_b
-      #response.body.should == "b:partial_in_b\nb:_partial_in_b"
+    it "GET :partial_in_b should render b/partial_in_b & b/_partial_in_b" do
+      get :partial_in_b
+      response.body.should == "b:partial_in_b => b:_partial_in_b"
     end
   end
 end

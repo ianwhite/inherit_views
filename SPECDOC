@@ -57,6 +57,12 @@ InheritViews controllers in production mode
 - should cache calls to find_inherited_template_path
 - should maintain different caches in different classes
 
-Finished in 0.252411 seconds
+NoTemplateFinderController
+- .file_exists_in_template? should call template.file_exists?
 
-40 examples, 0 failures
+WithTemplateFinderController
+- .file_exists_in_template? should call template.finder.file_exists?
+
+Finished in 0.520426 seconds
+
+42 examples, 0 failures

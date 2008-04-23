@@ -82,6 +82,23 @@ module Ardes#:nodoc:
       end        
       
       module ClassMethods
+        def self.extended(base)
+          base.class_eval do
+            # BC: Rails > 2.0.2 introduces template.finder, so we handle both cases
+            # Unfortunately this reduces coverage, by necessity only one of these branches can
+            # be covered in one test run.  No biggie.
+            if defined?(::ActionView::TemplateFinder)
+              def self.file_exists_in_template?(template, path)
+                template.finder.file_exists?(path)
+              end
+            else
+              def self.file_exists_in_template?(template, path)
+                template.file_exists?(path)
+              end
+            end
+          end
+        end
+        
         # Instruct the controller that it is not inheriting views
         def inherit_views=(bool)
           write_inheritable_attribute('inherit_views', !!bool)
@@ -109,20 +126,6 @@ module Ardes#:nodoc:
             if found_path = paths.find {|p| file_exists_in_template?(template, template_path.sub(/^#{inherit_path}/, p))}
               return template_path.sub(/^#{inherit_path}/, found_path)
             end
-          end
-          nil
-        end
-        
-        # BC: Rails > 2.0.2 introduces template.finder, so we handle both cases
-        # Unfortunately this reduces coverage, by necessity only one of these branches can
-        # be covered in one test run.  No biggie.
-        if defined?(ActionView::TemplateFinder)
-          def file_exists_in_template?(template, path)
-            template.finder.file_exists?(path)
-          end
-        else
-          def file_exists_in_template?(template, path)
-            template.file_exists?(path)
           end
         end
       end

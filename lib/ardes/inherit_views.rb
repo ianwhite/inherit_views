@@ -75,11 +75,6 @@ module Ardes#:nodoc:
           self.inherit_view_paths = paths if paths.size > 0
         end
       end
-
-      # Return true if the controller is inheriting views
-      def inherit_views?
-        !!read_inheritable_attribute('inherit_views')
-      end        
       
       module ClassMethods
         def self.extended(base)
@@ -97,6 +92,11 @@ module Ardes#:nodoc:
               end
             end
           end
+        end
+        
+        # Return true if the controller is inheriting views
+        def inherit_views?
+          !!read_inheritable_attribute('inherit_views')
         end
         
         # Instruct the controller that it is not inheriting views
@@ -216,14 +216,12 @@ module Ardes#:nodoc:
         end
       end
 
-      # Find an inherited template path prior to rendering, if appropriate.  Also sets @current_render = to
-      # the template currently being rendered
+      # Find an inherited template path prior to rendering, if appropriate.
       def render_file_with_inherit_views(template_path, use_full_path = true, local_assigns = {})
         if use_full_path && (controller.inherit_views? rescue false) && found_path = controller.find_inherited_template_path(template_path)
           template_path = found_path
         end
-        
-        with_current_render_of template_path do
+        with_current_render_of(template_path) do
           render_file_without_inherit_views(template_path, use_full_path, local_assigns)
         end
       end
@@ -235,12 +233,12 @@ module Ardes#:nodoc:
       end
       
     private
+      # looks for an inherited partial template
       def render_partial_with_inherit_views(partial_path, local_assigns = nil, deprecated_local_assigns = nil)
-        if found_path = controller.find_inherited_template_path("#{controller.controller_path}/_#{partial_path}")
+        if (controller.inherit_views? rescue false) && found_path = controller.find_inherited_template_path("#{controller.controller_path}/_#{partial_path}")
           partial_path = found_path.sub("/_#{partial_path}", "/#{partial_path}")
         end
-        
-        with_current_render_of partial_path do
+        with_current_render_of(partial_path) do
           render_partial_without_inherit_views(partial_path, local_assigns, deprecated_local_assigns)
         end
       end

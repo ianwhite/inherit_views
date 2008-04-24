@@ -1,3 +1,6 @@
+* Compatibility update for the new ActionView::Partial refactoring.
+  [thanks Chris Hapgood for reporting, and tracking down, the bug]
+
 * Compatible with both Rails 2.0.x and beyond - uses the template.finder object
   to find templates if that is available
 

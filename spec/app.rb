@@ -41,6 +41,13 @@ class DController < AController
   inherit_views 'other'
 end
 
+# used to test that inherit_views doesn't muck anything else up
+class NormalController < InheritViewsTestController
+  def partial_from_c; end
+end
+
+
+#####
 # These are created in production mode to test caching
 ENV["RAILS_ENV"] = 'production'
 
@@ -53,8 +60,10 @@ end
 
 # back to test mode
 ENV['RAILS_ENV'] = 'test'
+#####
 
 
+#####
 # BC: This is created without ActionView::TemplateFinder existing
 orig_template_finder = (ActionView::TemplateFinder rescue nil)
 orig_template_finder && ActionView.send(:remove_const, :TemplateFinder)
@@ -75,3 +84,4 @@ if orig_template_finder
   ActionView.send :remove_const, :TemplateFinder
   ActionView::TemplateFinder = orig_template_finder
 end
+#####

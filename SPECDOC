@@ -52,6 +52,9 @@ DController < AController; inherit_views 'other' (an instance)
 - should be inherit views
 - should have inherit view paths == ['d', 'other', 'a']
 
+NormalController
+- GET :partial_from_c should render normal/partial_from_c, then c/_partial_in_bc
+
 InheritViews controllers in production mode
 - should have inherited_template_paths_cache
 - should cache calls to find_inherited_template_path
@@ -63,6 +66,6 @@ NoTemplateFinderController
 WithTemplateFinderController
 - .file_exists_in_template? should call template.finder.file_exists?
 
-Finished in 0.520426 seconds
+Finished in 0.296507 seconds
 
-42 examples, 0 failures
+43 examples, 0 failures

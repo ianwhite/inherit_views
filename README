@@ -20,6 +20,7 @@ See it in action by doing this:
 This will clone all the required git repos (done only once), set up the target
 railses (done once), then run the targets.
 
+Notes:
 - To run the specs again, you can do rake garlic:run
 - To configure the dependencies and targets, take a look at the top level Rakefile
   * inherit_views doesn't work with 1.2.x, to test this try adding
@@ -28,7 +29,9 @@ railses (done once), then run the targets.
       rake garlic:prepare
       rake garlic:run
     and you'll see that it fails against 1.2.6
-    
+- In this example, the garlic repo has been added using braid, but you could add
+  it with submodules, or just have a completely different repo which does your
+  CI.
     
 == Example config
 

@@ -1,3 +1,5 @@
+* Now using garlic for CI
+
 * Compatibility update for the new ActionView::Partial refactoring.
   [thanks Chris Hapgood for reporting, and tracking down, the bug]
 

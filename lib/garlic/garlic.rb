@@ -67,13 +67,13 @@ module Garlic
       puts "\n#{'='*78}\nTargets: #{target_names.join(', ')}\n#{'='*78}\n"
       these_targets.each do |target|
         puts "\n#{'-'*78}\nTarget: #{target.name}\n#{'-'*78}\n"
-        #begin
+        begin
           target.run
           puts "\ntarget: #{target.name} PASS"
-        #rescue
-        #  puts "\ntarget: #{target.name} FAIL"
-        #  failed_names << target.name
-        #end
+        rescue
+          puts "\ntarget: #{target.name} FAIL"
+          failed_names << target.name
+        end
       end
       puts "\n#{'='*78}\n"
       failed_names.length > 0 and raise "The following targets passed: #{(target_names - failed_names).join(', ')}.\n\nThe following targets FAILED: #{failed_names.join(', ')}.\n\n"

@@ -39,7 +39,8 @@ module Garlic
       if Repo.path?(path)
         puts "\nUpdating #{name}..."
         begin
-          cd(path) { sh "git pull", :verbose => false }
+          checkout 'master'
+          cd(path) { sh "git pull origin master", :verbose => false }
         rescue Exception => e
           puts "\n\nIt seems there was a problem.\nTry running rake garlic:reset_repos\n\n"
           raise e

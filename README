@@ -41,8 +41,8 @@ In case you don't feel like downloading the above repo, here's the config:
 
   garlic do
     # default paths are 'garlic/work', and 'garlic/repos'
-    work_path = "tmp/work"
-    repo_path = "tmp/repos"
+    work_path "tmp/work"
+    repo_path "tmp/repos"
   
     # repo, give a url, specify :local to use a local repo (faster
     # and will still update from the origin url)

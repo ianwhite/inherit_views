@@ -6,43 +6,7 @@ require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
 require 'rake/rdoctask'
 
-################
-# garlic config
-#
-require File.join(File.dirname(__FILE__), 'garlic/lib/garlic_tasks')
-
-garlic do
-  # repo, give a url, and optional branch
-  repo 'rails', :url => 'git://github.com/rails/rails'
-  repo 'rspec', :url => 'git://github.com/dchelimsky/rspec'
-  repo 'rspec-rails', :url => 'git://github.com/ianwhite/rspec-rails'
-  repo 'inherit_views', :url => '.'
-  
-  # for target, default repo is 'rails', default branch is 'master'
-  target 'edge'
-  target '2.0-stable', :branch => 'origin/2-0-stable'
-  target '2.0.2', :tag => 'v2.0.2'
-  
-  all_targets do
-    prepare do
-      plugin 'rspec'
-      plugin 'rspec-rails', :branch => 'origin/aliased-render-partial' do
-        sh "script/generate rspec -f"
-      end
-      plugin 'inherit_views'
-    end
-    
-    run do
-      cd "vendor/plugins/inherit_views" do
-        sh "rake spec:rcov:verify"
-      end
-    end
-  end
-end
-
-#
-# end garlic config
-####################
+require File.dirname(__FILE__) + '/garlic_config'
 
 plugin_name = File.basename(File.dirname(__FILE__))
 

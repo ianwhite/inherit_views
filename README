@@ -15,7 +15,7 @@ See it in action by doing this:
 
   git clone git://github.com/ianwhite/inherit_views 
   cd inherit_views
-  rake cruise
+  rake garlic:all
 
 This will clone all the required git repos (done only once), set up the target
 railses (done once), then run the targets.

@@ -16,10 +16,10 @@ garlic do
 
   # repo, give a url, specify :local to use a local repo (faster
   # and will still update from the origin url)
-  repo 'rails', :url => 'git://github.com/rails/rails' #, :local => "~/dev/vendor/rails"
-  repo 'rspec', :url => 'git://github.com/dchelimsky/rspec' #, :local => "~/dev/vendor/rspec"
+  repo 'rails', :url => 'git://github.com/rails/rails' , # :local => "~/dev/vendor/rails"
+  repo 'rspec', :url => 'git://github.com/dchelimsky/rspec' , # :local => "~/dev/vendor/rspec"
   repo 'rspec-rails', :url => 'git://github.com/ianwhite/rspec-rails'
-  repo 'inherit_views', :url => '.'
+  repo 'inherit_views', :path => '.'
 
   # for target, default repo is 'rails', default branch is 'master'
   target 'edge'
@@ -32,7 +32,7 @@ garlic do
       plugin 'rspec-rails', :branch => 'origin/aliased-render-partial' do
         sh "script/generate rspec -f"
       end
-      plugin 'inherit_views'
+      plugin 'inherit_views', :clone => true # so we can work on it and push fixes upstream
     end
   
     run do

@@ -17,7 +17,7 @@ garlic do
   # repo, give a url, specify :local to use a local repo (faster
   # and will still update from the origin url)
   repo 'rails', :url => 'git://github.com/rails/rails' #, :local => "~/dev/vendor/rails"
-  repo 'rspec', :url => 'git://github.com/dchelimsky/rspec', #, :local => "~/dev/vendor/rspec"
+  repo 'rspec', :url => 'git://github.com/dchelimsky/rspec' #, :local => "~/dev/vendor/rspec"
   repo 'rspec-rails', :url => 'git://github.com/ianwhite/rspec-rails'
   repo 'inherit_views', :url => '.'
 

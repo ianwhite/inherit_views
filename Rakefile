@@ -6,13 +6,17 @@ require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
 require 'rake/rdoctask'
 
-require File.dirname(__FILE__) + '/garlic_config'
+# load up garlic if it's here
+if File.directory?(File.join(File.dirname(__FILE__), 'garlic'))
+  require File.join(File.dirname(__FILE__), 'garlic/lib/garlic_tasks')
+  require File.join(File.dirname(__FILE__), 'garlic')
+end
 
 plugin_name = File.basename(File.dirname(__FILE__))
 
 task :default => :spec
 
-task :cruise => "garlic:cruise"
+task :cruise => "garlic:all"
 
 desc "Run the specs for #{plugin_name}"
 Spec::Rake::SpecTask.new(:spec) do |t|
@@ -70,3 +74,4 @@ namespace :doc do
   desc "Generate all documentation (rdoc, specdoc, specdoc html and rcov) for #{plugin_name}"
   task :all => ["spec:doc:html", "spec:doc", "spec:rcov", "doc"]
 end
+  

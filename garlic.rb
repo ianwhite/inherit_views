@@ -1,11 +1,16 @@
 # This is for running inherit_views specs against its target versions of rails
 #
 # To do so, do the following:
+#   - Edit the config below if you wish, to let garlic know about your local
+#      clones of rails, rspec and rspec-rails
+#   - Download garlic (it's tiny)
+#       (standing in inheirt_views)
+#       git clone git://github.com/ianwhite/garlic.git garlic
+#   - Run garlic
+#       rake garlic:all
 #
-# (standing in inheirt_views)
-#
-# git clone git://github.com/ianwhite/garlic.git garlic
-# rake garlic:all
+# Subsequent runs can be done with 
+#       rake garlic:run
 #
 # All of the work and dependencies will be created in the galric dir, and the
 # garlic dir can safely be deleted at any point

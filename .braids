@@ -1,6 +1,2 @@
---- 
-garlic: 
-  local_branch: braid/git/garlic/master
-  type: git
-  branch: master
-  remote: git://github.com/ianwhite/garlic
+--- {}
+

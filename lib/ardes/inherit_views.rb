@@ -80,8 +80,6 @@ module Ardes#:nodoc:
         def self.extended(base)
           base.class_eval do
             # BC: Rails > 2.0.2 introduces template.finder, so we handle both cases
-            # Unfortunately this reduces coverage, by necessity only one of these branches can
-            # be covered in one test run.  No biggie.
             if defined?(::ActionView::TemplateFinder)
               def self.file_exists_in_template?(template, path)
                 template.finder.file_exists?(path)

@@ -69,7 +69,6 @@ module Ardes#:nodoc:
           unless included_modules.include? ::Ardes::InheritViews::ActionController::InstanceMethods
             extend ClassMethods
             include InstanceMethods
-            extend CachedInheritedTemplatePaths if ENV['RAILS_ENV'] == 'production'
           end
           self.inherit_views = true
           self.inherit_view_paths = paths if paths.size > 0
@@ -77,29 +76,14 @@ module Ardes#:nodoc:
       end
       
       module ClassMethods
-        def self.extended(base)
-          base.class_eval do
-            # BC: Rails > 2.0.2 introduces template.finder, so we handle both cases
-            if defined?(::ActionView::TemplateFinder)
-              def self.file_exists_in_template?(template, path)
-                template.finder.file_exists?(path)
-              end
-            else
-              def self.file_exists_in_template?(template, path)
-                template.file_exists?(path)
-              end
-            end
-          end
-        end
-        
         # Return true if the controller is inheriting views
         def inherit_views?
-          !!read_inheritable_attribute('inherit_views')
+          read_inheritable_attribute('inherit_views') ? true : false
         end
         
-        # Instruct the controller that it is not inheriting views
+        # Instruct the controller that it is, or is not, inheriting views
         def inherit_views=(bool)
-          write_inheritable_attribute('inherit_views', !!bool)
+          write_inheritable_attribute('inherit_views', bool ? true : false)
         end
         
         # Return the inherit view paths, in order of self to ancestor
@@ -116,24 +100,9 @@ module Ardes#:nodoc:
           inherited = inherit_view_paths - paths - [controller_path]
           instance_variable_set('@inherit_view_paths', [controller_path] + ((paths - [controller_path]) + inherited))
         end
-        
-        def find_inherited_template_path_in(template, template_path, include_self = true)
-          if inherit_path = inherit_view_paths.find {|p| template_path =~ /^#{p}\//}
-            paths = inherit_view_paths.slice(inherit_view_paths.index(inherit_path) + (include_self ? 0 : 1)..-1)
-            
-            if found_path = paths.find {|p| file_exists_in_template?(template, template_path.sub(/^#{inherit_path}/, p))}
-              return template_path.sub(/^#{inherit_path}/, found_path)
-            end
-          end
-        end
       end
       
       module InstanceMethods
-        def self.included(base)#:nodoc:
-          base.send :hide_action, *public_instance_methods
-          base.send :alias_method_chain, :render_for_file, :inherit_views
-        end
-        
         # Return true if the controller is inheriting views
         def inherit_views?
           self.class.inherit_views?
@@ -143,54 +112,11 @@ module Ardes#:nodoc:
         def inherit_view_paths
           self.class.inherit_view_paths
         end
-        
-        # intercepts render_file and looks for an inherited template_path, if appropriate
-        def render_for_file_with_inherit_views(template_path, status = nil, use_full_path = false, locals = {})
-          if use_full_path and inherit_views? and found_path = find_inherited_template_path(template_path)
-            template_path = found_path
-          end
-          render_for_file_without_inherit_views(template_path, status, use_full_path, locals)
-        end
-
-        # given a template_path, returns the first existing template_path in parent inherit paths.
-        # If +include_self+ is false, the search does not include the passed template_path
-        #
-        # If one cannot be found, then nil is returned
-        def find_inherited_template_path(template_path, include_self = true)
-          self.class.find_inherited_template_path_in(@template, template_path, include_self)
-        end
-      end
-      
-      # This module is included into inherit_views controllers in production mode.  It's purpose is
-      # to cache the calls to find_inherited_template_path, so that the file system is not relentlessly
-      # queried to find the inherited template_path.
-      module CachedInheritedTemplatePaths
-        def self.extended(base)#:nodoc:
-          base.class_eval do
-            class<<self
-              alias_method_chain :find_inherited_template_path_in, :cache
-            end
-          end
-        end
-        
-        def inherited_template_paths_cache
-          instance_variable_get('@inherited_template_paths_cache') || instance_variable_set('@inherited_template_paths_cache', {})
-        end
-          
-        def find_inherited_template_path_in_with_cache(template, template_path, include_self = true)
-          inherited_template_paths_cache[[template_path, include_self]] ||= find_inherited_template_path_in_without_cache(template, template_path, include_self)
-        end
       end
     end
     
     # Mixin for ActionView to enable inherit views functionality.  This module is
     # included into ActionView::Base
-    #
-    # +render_file+ is modified so that it picks an inherited file to render
-    #
-    # +render_partial+ likewise
-    # 
-    # +render_parent+ is introduced
     #
     # Those familiar with the internals of ActionView will know that the <tt>@first_render</tt>
     # instance var is used to keep track of what is the 'root' template being rendered.  A similar
@@ -199,51 +125,47 @@ module Ardes#:nodoc:
     #
     module ActionView
       def self.included(base)# :nodoc:
-        base.send :alias_method_chain, :render_file, :inherit_views
-        base.send :alias_method_chain, :render_partial, :inherit_views
+        base.class_eval do
+          alias_method_chain :render, :inherit_views
+          
+          alias_method :_orig_pick_template, :_pick_template
+          
+          def _pick_template(template_path)
+            _orig_pick_template(template_path)
+          end
+        end
       end
-
+      
       # Renders the parent template for the current template
       # takes normal rendering options (:layout, :locals, etc)
       def render_parent(options = {})
-        raise ArgumentError, 'render_parent requires that controller inherit_views' unless (controller.inherit_views? rescue false)
-        if template_path = controller.find_inherited_template_path(@current_render, include_self = false)
-          render(options.merge(:file => template_path, :use_full_path => true))
-        else
-          raise InheritedFileNotFound, "no parent for #{@current_render} found"
-        end
+        #raise ArgumentError, 'render_parent requires that controller inherit_views' unless (controller.inherit_views? rescue false)
+        #
+        #if @current_render
+        #  if @current_render[:file] && (file = _pick_template(@current_render[:file], include_self = false))
+        #    return render(options.merge(:file => file))
+        #  elsif @current_render[:partial] && (partial = _pick_template(_pick_partial_template(@current_render[:partial]), include_self = false))
+        #    return render(options.merge(:partial => partial))
+        #  end
+        #end
+        #raise InheritedFileNotFound, "no parent for #{@current_render.inspect} found"
       end
 
       # Find an inherited template path prior to rendering, if appropriate.
-      def render_file_with_inherit_views(template_path, use_full_path = true, local_assigns = {})
-        if use_full_path && (controller.inherit_views? rescue false) && found_path = controller.find_inherited_template_path(template_path)
-          template_path = found_path
-        end
-        with_current_render_of(template_path) do
-          render_file_without_inherit_views(template_path, use_full_path, local_assigns)
+      def render_with_inherit_views(options = {}, local_assigns = {}, &block)
+        _with_current_render_of(options.slice(:file, :partial)) do
+          render_without_inherit_views(options, local_assigns, &block)
         end
       end
-      
-      # Find inherited template path for the given path, optionally pass a controller class 
-      # to find the inherited view for the passed controller class
-      def inherited_template_path(template_path, klass = controller.class)
-        klass.find_inherited_template_path_in(self, template_path)
+    
+      # Find an inherited template path for a controller context
+      def inherited_template_path(template_path, controller_class = controller.class)
+        #_pick_template(template_path, true, controller_class.inherit_view_paths)
       end
-      
+    
     private
-      # looks for an inherited partial template
-      def render_partial_with_inherit_views(partial_path, local_assigns = nil, deprecated_local_assigns = nil)
-        if (controller.inherit_views? rescue false) && found_path = controller.find_inherited_template_path("#{controller.controller_path}/_#{partial_path}")
-          partial_path = found_path.sub("/_#{partial_path}", "/#{partial_path}")
-        end
-        with_current_render_of(partial_path) do
-          render_partial_without_inherit_views(partial_path, local_assigns, deprecated_local_assigns)
-        end
-      end
-      
-      # sets @current_render to argument for the duration of the passed block
-      def with_current_render_of(path, &block)
-        orig, @current_render = @current_render, path
+      def _with_current_render_of(options, &block)
+        orig, @current_render = @current_render, options
         yield
       ensure
         @current_render = orig

@@ -1,3 +1,5 @@
+* branched fro rails 2.0 and 2.1 in rails-2.0-2.1, edge rails follows master branch
+
 * Now using garlic for CI
 
 * Compatibility update for the new ActionView::Partial refactoring.

@@ -1,5 +1,13 @@
 http://plugins.ardes.com > inherit_views
 
+= Status
+
+inherit_views works on rails 2.0-stable and 2.1-stable.  To get this version checkout the rails-2.0-2.1 branch
+
+  git clone git://github.com/ianhwite/inherit_views rails-2.0-2.1
+  
+inherit_views is broken on edge at the moment.  Edge's view internals have changed a lot, and so I'm working on a rewrite for edge.  This is found in the master branch
+
 = inherit_views
 
 This plugin allows your controllers to inherit their views from parent controllers.  The default behaviour is to inherit along the ancestor path of the controller, but you can also specify custom inherit view paths to search.

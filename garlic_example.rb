@@ -24,9 +24,23 @@ garlic do
   repo 'inherit_views', :path => '.'
 
   # for target, default repo is 'rails', default branch is 'master'
-  target 'edge'
-  target '2.0-stable', :branch => 'origin/2-0-stable'
-  target '2.1-stable', :branch => 'origin/2-1-stable'
+  target 'edge' do
+    prepare do
+      plugin 'inherit_views', :clone => true
+    end
+  end
+  
+  target '2.0-stable', :branch => 'origin/2-0-stable' do
+    prepare do
+      plugin 'inherit_views', :branch => 'origin/rails-2.0-2.1'
+    end
+  end
+  
+  target '2.1-stable', :branch => 'origin/2-1-stable' do
+    prepare do
+      plugin 'inherit_views', :branch => 'origin/rails-2.0-2.1'
+    end
+  end
 
   all_targets do
     prepare do
@@ -34,7 +48,6 @@ garlic do
       plugin 'rspec-rails' do
         sh "script/generate rspec -f"
       end
-      plugin 'inherit_views', :clone => true # so we can work on it and push fixes upstream
     end
   
     run do

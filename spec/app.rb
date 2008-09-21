@@ -27,6 +27,7 @@ class BController < InheritViewsTestController
   def bad_render_parent; end
   def partial_in_bc; end
   def partial_in_b; end
+  def collection_in_bc; end
 end
 
 # :c cotroller is a subclass of :b controller, so it inheirt's b's views ('c', 'b', then 'a')

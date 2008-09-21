@@ -30,7 +30,7 @@ garlic do
   # for target, default repo is 'rails', default branch is 'master'
   target 'edge', :branch => 'origin/master' do
     prepare do
-      plugin 'inherit_views', :clone => true
+      plugin 'inherit_views', :branch => 'origin/master', :clone => true
       plugin 'rspec'
       plugin 'rspec-rails' do
         sh "script/generate rspec -f"

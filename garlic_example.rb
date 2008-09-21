@@ -32,13 +32,13 @@ garlic do
   
   target '2.0-stable', :branch => 'origin/2-0-stable' do
     prepare do
-      plugin 'inherit_views', :branch => 'origin/rails-2.0-2.1'
+      plugin 'inherit_views', :branch => 'origin/rails-2.0-2.1', :clone => true
     end
   end
   
   target '2.1-stable', :branch => 'origin/2-1-stable' do
     prepare do
-      plugin 'inherit_views', :branch => 'origin/rails-2.0-2.1'
+      plugin 'inherit_views', :branch => 'origin/rails-2.0-2.1', :clone => true
     end
   end
 

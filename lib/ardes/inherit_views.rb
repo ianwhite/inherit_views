@@ -98,6 +98,7 @@ module Ardes#:nodoc:
     module ActionView
       def self.included(base)# :nodoc:
         base.class_eval do
+        private
           alias_method :_orig_pick_template, :_pick_template
           
           def _pick_template(template_path)

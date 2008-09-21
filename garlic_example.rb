@@ -19,20 +19,19 @@ garlic do
   # and will still update from the origin url)
   repo 'rails', :url => 'git://github.com/rails/rails' #,  :local => "~/dev/vendor/rails"
   # using own clone of rspec, until aliased-render-partial gets fixed.
-  repo 'rspec', :url => 'git://github.com/ianwhite/rspec'
-  repo 'rspec-rails', :url => 'git://github.com/ianwhite/rspec-rails'
+  repo 'rspec', :url => 'git://github.com/ianwhite/rspec' #, :local => "~/dev/ianwhite/spec"
+  repo 'rspec-rails', :url => 'git://github.com/ianwhite/rspec-rails'#, :local => "~/dev/ianwhite/spec"
   repo 'inherit_views', :path => '.'
 
   # for target, default repo is 'rails', default branch is 'master'
   target 'edge'
   target '2.0-stable', :branch => 'origin/2-0-stable'
-  target '2.0.3', :tag => 'v2.0.3'
-  target '2.1.0-RC1', :tag => 'v2.1.0_RC1' 
+  target '2.1-stable', :branch => 'origin/2-1-stable'
 
   all_targets do
     prepare do
-      plugin 'rspec', :branch => 'origin/aliased-render-partial'
-      plugin 'rspec-rails', :branch => 'origin/aliased-render-partial' do
+      plugin 'rspec'
+      plugin 'rspec-rails' do
         sh "script/generate rspec -f"
       end
       plugin 'inherit_views', :clone => true # so we can work on it and push fixes upstream

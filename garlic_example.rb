@@ -35,10 +35,10 @@ garlic do
       plugin 'rspec-rails' do
         sh "script/generate rspec -f"
       end
-      run do
-        cd "vendor/plugins/inherit_views" do
-          sh "rake spec:rcov:verify"
-        end
+    end
+    run do
+      cd "vendor/plugins/inherit_views" do
+        sh "rake spec:rcov:verify"
       end
     end
   end
@@ -50,10 +50,10 @@ garlic do
       plugin 'ianwhite-rspec-rails', :as => 'rspec-rails' do
         sh "script/generate rspec -f"
       end
-      run do
-        cd "vendor/plugins/inherit_views" do
-          sh "rake spec"
-        end
+    end
+    run do
+      cd "vendor/plugins/inherit_views" do
+        sh "rake spec"
       end
     end
   end
@@ -65,10 +65,10 @@ garlic do
       plugin 'ianwhite-rspec-rails', :as => 'rspec-rails' do
         sh "script/generate rspec -f"
       end
-      run do
-        cd "vendor/plugins/inherit_views" do
-          sh "rake spec"
-        end
+    end
+    run do
+      cd "vendor/plugins/inherit_views" do
+        sh "rake spec"
       end
     end
   end

@@ -9,6 +9,8 @@ AController < TestController; inherit_views (an instance)
 - GET :in_abc should render a/in_abc
 - GET :in_a should render a/in_a
 - GET :in_ab should render a/in_ab
+- GET :render_non_existent_partial should raise ActionView::TemplateError
+- GET :render_non_existent_template should raise ActionView::MissingTemplate
 
 BController < TestController; inherit_views 'a' (the class)
 - should be inherit views
@@ -52,6 +54,6 @@ DController < AController; inherit_views 'other' (an instance)
 NormalController
 - GET :partial_from_c should render normal/partial_from_c, then c/_partial_in_bc
 
-Finished in 0.348816 seconds
+Finished in 0.242443 seconds
 
-35 examples, 0 failures
+37 examples, 0 failures

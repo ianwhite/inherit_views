@@ -6,6 +6,10 @@ end
 # its subclasses will inherit its views
 class AController < InheritViewsTestController
   inherit_views
+  
+  def render_non_existent_template
+    render :action => 'non_exitsent'
+  end
 end
 
 # :b controller is a normal controller with inherit_views 'a'
@@ -23,6 +27,6 @@ class DController < AController
   inherit_views 'other'
 end
 
-# used to test that inherit_views doesn't muck anything else up
+# used to test normal rails behaviour
 class NormalController < InheritViewsTestController
 end

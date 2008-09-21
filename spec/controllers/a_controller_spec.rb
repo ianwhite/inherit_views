@@ -33,5 +33,13 @@ describe AController, " < TestController; inherit_views" do
       get :in_ab
       response.body.should == 'a:in_ab'
     end
+    
+    it "GET :render_non_existent_partial should raise ActionView::TemplateError" do
+      lambda { get :render_non_existent_partial }.should raise_error(ActionView::TemplateError)
+    end
+    
+    it "GET :render_non_existent_template should raise ActionView::MissingTemplate" do
+      lambda { get :render_non_existent_template }.should raise_error(ActionView::MissingTemplate)
+    end
   end
 end

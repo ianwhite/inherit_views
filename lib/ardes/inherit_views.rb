@@ -44,10 +44,6 @@ module Ardes#:nodoc:
   #   end
   #
   module InheritViews
-    
-    # raised when an inherited file cannot be found, and one is required (e.g. in render_parent)
-    class InheritedFileNotFound < RuntimeError; end
-    
     # extension for ActionController::Base which enables inherit_views, this module is extended into
     # ActionController::Base
     module ActionController
@@ -103,10 +99,12 @@ module Ardes#:nodoc:
           
           def _pick_template(template_path)
             _orig_pick_template(template_path)
-          rescue ::ActionView::MissingTemplate
+          rescue ::ActionView::MissingTemplate => e
             if controller.respond_to?(:inherit_views?) && controller.inherit_views?
-              _pick_template_from_inherit_view_paths(template_path, controller.inherit_view_paths)
+              found = _pick_template_from_inherit_view_paths(template_path, controller.inherit_view_paths)
+              return found if found
             end
+            raise e
           end
           
           def _pick_template_from_inherit_view_paths(template_path, inherit_view_paths)
@@ -124,6 +122,7 @@ module Ardes#:nodoc:
                 return inherited_template if inherited_template
               end
             end
+            nil
           end
           memoize :_pick_template_from_inherit_view_paths
         end

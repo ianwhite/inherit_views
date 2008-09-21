@@ -28,7 +28,7 @@ garlic do
   repo 'inherit_views', :path => '.'
 
   # for target, default repo is 'rails', default branch is 'master'
-  target 'edge', :branch => 'master' do
+  target 'edge', :branch => 'origin/master' do
     prepare do
       plugin 'inherit_views', :clone => true
       plugin 'rspec'

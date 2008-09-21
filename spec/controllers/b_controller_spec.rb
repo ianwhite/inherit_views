@@ -57,5 +57,10 @@ describe BController, " < TestController; inherit_views 'a'" do
       get :partial_in_b
       response.body.should == "b:partial_in_b => b:_partial_in_b"
     end
+    
+    it "GET :collection_in_bc should render b/collection_in_bc then b/_partial_in_bc" do
+      get :collection_in_bc
+      response.body.should == 'b:collection_in_bc => b:_partial_in_bc'
+    end
   end
 end

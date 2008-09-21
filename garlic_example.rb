@@ -17,18 +17,18 @@ garlic do
 
   # repo, give a url, specify :local to use a local repo (faster
   # and will still update from the origin url)
-  repo 'rails', :url => 'git://github.com/rails/rails' #,  :local => "~/dev/vendor/rails"
-  repo 'rspec', :url => 'git://github.com/dchelimsky/rspec' #, :local => "~/dev/vendor/spec"
-  repo 'rspec-rails', :url => 'git://github.com/dchelimsky/rspec-rails' #, :local => "~/dev/vendor/spec"
+  repo 'rails', :url => 'git://github.com/rails/rails' ,  :local => "~/dev/vendor/rails"
+  repo 'rspec', :url => 'git://github.com/dchelimsky/rspec' , :local => "~/dev/vendor/spec"
+  repo 'rspec-rails', :url => 'git://github.com/dchelimsky/rspec-rails' , :local => "~/dev/vendor/spec"
   
   # these are for testing rails-2.0-2.1 branch
-  repo 'ianwhite-rspec', :url => 'git://github.com/ianwhite/rspec' #, :local => "~/dev/ianwhite/spec"
-  repo 'ianwhite-rspec-rails', :url => 'git://github.com/ianwhite/rspec-rails' #, :local => "~/dev/ianwhite/spec"
+  repo 'ianwhite-rspec', :url => 'git://github.com/ianwhite/rspec' , :local => "~/dev/ianwhite/spec"
+  repo 'ianwhite-rspec-rails', :url => 'git://github.com/ianwhite/rspec-rails' , :local => "~/dev/ianwhite/spec"
   
   repo 'inherit_views', :path => '.'
 
   # for target, default repo is 'rails', default branch is 'master'
-  target 'edge' do
+  target 'edge', :branch => 'master' do
     prepare do
       plugin 'inherit_views', :clone => true
       plugin 'rspec'
@@ -46,8 +46,8 @@ garlic do
   target '2.0-stable', :branch => 'origin/2-0-stable' do
     prepare do
       plugin 'inherit_views', :branch => 'origin/rails-2.0-2.1', :clone => true
-      plugin 'ianwhite-rspec'
-      plugin 'ianwhite-rspec-rails' do
+      plugin 'ianwhite-rspec', :as => 'rspec'
+      plugin 'ianwhite-rspec-rails', :as => 'rspec-rails' do
         sh "script/generate rspec -f"
       end
       run do
@@ -61,8 +61,8 @@ garlic do
   target '2.1-stable', :branch => 'origin/2-1-stable' do
     prepare do
       plugin 'inherit_views', :branch => 'origin/rails-2.0-2.1', :clone => true
-      plugin 'ianwhite-rspec'
-      plugin 'ianwhite-rspec-rails' do
+      plugin 'ianwhite-rspec', :as => 'rspec'
+      plugin 'ianwhite-rspec-rails', :as => 'rspec-rails' do
         sh "script/generate rspec -f"
       end
       run do

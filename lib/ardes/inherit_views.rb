@@ -124,6 +124,8 @@ module Ardes#:nodoc:
     # file.  This enables +render_parent+ to know which to file render.
     #
     module ActionView
+      extend ActiveSupport::Memoizable
+      
       def self.included(base)# :nodoc:
         base.class_eval do
           alias_method_chain :render, :inherit_views
@@ -131,7 +133,7 @@ module Ardes#:nodoc:
           alias_method :_orig_pick_template, :_pick_template
           
           def _pick_template(template_path)
-            _orig_pick_template(template_path)
+            _pick_inherited_template_for_controller(template_path, controller)
           end
         end
       end
@@ -139,16 +141,12 @@ module Ardes#:nodoc:
       # Renders the parent template for the current template
       # takes normal rendering options (:layout, :locals, etc)
       def render_parent(options = {})
-        #raise ArgumentError, 'render_parent requires that controller inherit_views' unless (controller.inherit_views? rescue false)
-        #
-        #if @current_render
-        #  if @current_render[:file] && (file = _pick_template(@current_render[:file], include_self = false))
-        #    return render(options.merge(:file => file))
-        #  elsif @current_render[:partial] && (partial = _pick_template(_pick_partial_template(@current_render[:partial]), include_self = false))
-        #    return render(options.merge(:partial => partial))
-        #  end
-        #end
-        #raise InheritedFileNotFound, "no parent for #{@current_render.inspect} found"
+        raise ArgumentError, 'render_parent requires that controller inherit_views' unless (controller.inherit_views? rescue false)
+        
+        if @current_render && @current_render[:file] && (file = _pick_inherited_template(@current_render[:file], controller.inherit_view_paths))
+          return render(options.merge(:file => file))
+        end
+        raise InheritedFileNotFound, "no parent for #{@current_render[:file]} found"
       end
 
       # Find an inherited template path prior to rendering, if appropriate.
@@ -160,10 +158,37 @@ module Ardes#:nodoc:
     
       # Find an inherited template path for a controller context
       def inherited_template_path(template_path, controller_class = controller.class)
-        #_pick_template(template_path, true, controller_class.inherit_view_paths)
+        _pick_inherited_template_for_controller(template_path, controller).to_s
       end
     
     private
+      def _pick_inherited_template_for_controller(template_path, controller)
+        _orig_pick_template(template_path)
+      rescue ::ActionView::MissingTemplate
+        if (controller.inherit_views? rescue false)
+          _pick_inherited_template(template_path, controller.inherit_view_paths)
+        end
+      end  
+      
+      def _pick_inherited_template(template_path, inherit_view_paths)
+        starting_path = inherit_view_paths.detect {|p| template_path =~ /^#{p}\//}
+        
+        if starting_path 
+          inherit_paths_above_starting_path = inherit_view_paths.slice(inherit_view_paths.index(starting_path)+1..-1)
+          
+          inherit_paths_above_starting_path.each do |path|
+            inherited_template = begin
+              _orig_pick_template(template_path.sub(/^#{starting_path}/, path))
+            rescue ::ActionView::MissingTemplate
+              nil
+            end
+            
+            return inherited_template if inherited_template
+          end
+        end
+      end
+      memoize :_pick_inherited_template
+      
       def _with_current_render_of(options, &block)
         orig, @current_render = @current_render, options
         yield

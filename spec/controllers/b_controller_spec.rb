@@ -40,10 +40,8 @@ describe BController, " < TestController; inherit_views 'a'" do
     end
 
     it "GET :render_parent should render a/render_parent inside b/render_parent" do
-      pending do 
-        get :render_parent
-        response.body.should == "b:render_parent(a:render_parent)"
-      end
+      get :render_parent
+      response.body.should == "b:render_parent(a:render_parent)"
     end
   
     it "GET :bad_render_parent should raise ActionView::TemplateError as there is no parent to render" do

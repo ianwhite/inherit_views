@@ -12,17 +12,6 @@ module Ardes#:nodoc:
   #     ... # will look for views in 'views/bar' and 'views/foo' 
   #   end
   #
-  # in views/foo/_my_view.rhtml:
-  #
-  #   <h1>My View Thing</h1>
-  #
-  # in views/bar/_my_view.rhtml:
-  #
-  #   <%= render_parent %>
-  #   <p>With some bar action</p>
-  # 
-  # === In Controllers
-  #
   # In the example above, If BarController, or any of the views in views/bar, renders 'bar/view'
   # and it is not found then 'foo/view' is rendered (if it can be found)
   #
@@ -107,75 +96,36 @@ module Ardes#:nodoc:
     # Mixin for ActionView to enable inherit views functionality.  This module is
     # included into ActionView::Base
     module ActionView
-      extend ActiveSupport::Memoizable
-      
       def self.included(base)# :nodoc:
         base.class_eval do
-          alias_method_chain :render, :inherit_views
           alias_method :_orig_pick_template, :_pick_template
           
           def _pick_template(template_path)
-            _pick_inherited_template_for_controller(template_path, controller)
-          end
-        end
-      end
-      
-      # Renders the parent template for the current template
-      # takes normal rendering options (:layout, :locals, etc)
-      def render_parent(options = {})
-        raise ArgumentError, 'render_parent requires that controller inherit_views' unless (controller.inherit_views? rescue false)
-        
-        if @current_render && @current_render[:file] && (file = _pick_inherited_template(@current_render[:file], controller.inherit_view_paths))
-          return render(options.merge(:file => file))
-        end
-        raise InheritedFileNotFound, "no parent for #{@current_render[:file]} found"
-      end
-
-      # Find an inherited template path prior to rendering, if appropriate.
-      def render_with_inherit_views(options = {}, local_assigns = {}, &block)
-        _with_current_render_of(options.slice(:file, :partial)) do
-          render_without_inherit_views(options, local_assigns, &block)
-        end
-      end
-    
-      # Find an inherited template path for a controller context
-      def inherited_template_path(template_path, controller_class = controller.class)
-        _pick_inherited_template_for_controller(template_path, controller).to_s
-      end
-    
-    private
-      def _pick_inherited_template_for_controller(template_path, controller)
-        _orig_pick_template(template_path)
-      rescue ::ActionView::MissingTemplate
-        if controller.respond_to?(:inherit_views?) && controller.inherit_views?
-          _pick_inherited_template(template_path, controller.inherit_view_paths)
-        end
-      end  
-      
-      def _pick_inherited_template(template_path, inherit_view_paths)
-        # first, we grab the inherited paths that are 'above' the given template_path
-        if starting_path = inherit_view_paths.detect {|path| template_path =~ /^#{path}\//}
-          paths_above_template_path = inherit_view_paths.slice(inherit_view_paths.index(starting_path)+1..-1)
-          
-          # then, search through each one, substibuting the inherited path
-          paths_above_template_path.each do |path|
-            inherited_template = begin
-              _orig_pick_template(template_path.sub(/^#{starting_path}/, path))
-            rescue ::ActionView::MissingTemplate
-              nil
+            _orig_pick_template(template_path)
+          rescue ::ActionView::MissingTemplate
+            if controller.respond_to?(:inherit_views?) && controller.inherit_views?
+              _pick_template_from_inherit_view_paths(template_path, controller.inherit_view_paths)
             end
-            
-            return inherited_template if inherited_template
           end
+          
+          def _pick_template_from_inherit_view_paths(template_path, inherit_view_paths)
+            # first, we grab the inherited paths that are 'above' the given template_path
+            if starting_path = inherit_view_paths.detect {|path| template_path =~ /^#{path}\//}
+              paths_above_template_path = inherit_view_paths.slice(inherit_view_paths.index(starting_path)+1..-1)
+    
+              # then, search through each path, substibuting the inherited path, returning the first found
+              paths_above_template_path.each do |path|
+                inherited_template = begin
+                  _orig_pick_template(template_path.sub(/^#{starting_path}/, path))
+                rescue ::ActionView::MissingTemplate
+                  nil
+                end
+                return inherited_template if inherited_template
+              end
+            end
+          end
+          memoize :_pick_template_from_inherit_view_paths
         end
-      end
-      memoize :_pick_inherited_template
-      
-      def _with_current_render_of(options, &block)
-        orig, @current_render = @current_render, options
-        yield
-      ensure
-        @current_render = orig
       end
     end
   end  

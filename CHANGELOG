@@ -1,3 +1,9 @@
+* Removed render_parent for now (in edge rails version)
+
+* inherit_views allows inherited templates to be rendered where there is no action method
+
+* Vastly simplified internals, making use of the _pick_template single point of entry
+
 * branched fro rails 2.0 and 2.1 in rails-2.0-2.1, edge rails follows master branch
 
 * Now using garlic for CI

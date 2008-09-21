@@ -38,15 +38,6 @@ describe BController, " < TestController; inherit_views 'a'" do
       get :in_abc
       response.body.should == 'b:in_abc'
     end
-
-    it "GET :render_parent should render a/render_parent inside b/render_parent" do
-      get :render_parent
-      response.body.should == "b:render_parent(a:render_parent)"
-    end
-  
-    it "GET :bad_render_parent should raise ActionView::TemplateError as there is no parent to render" do
-      lambda { get :bad_render_parent }.should raise_error(ActionView::TemplateError, "no parent for b/bad_render_parent found")
-    end
   
     it "GET :partial_in_bc should render b/partial_in_bc & b/_partial_in_bc" do
       get :partial_in_bc
@@ -61,11 +52,6 @@ describe BController, " < TestController; inherit_views 'a'" do
     it "GET :collection_in_bc should render b/collection_in_bc then b/_partial_in_bc" do
       get :collection_in_bc
       response.body.should == 'b:collection_in_bc => b:_partial_in_bc'
-    end
-    
-    it "GET :partial_render_parent should render b/partial_render_parent & b/_partial_render_parent & a/_partial_render_parent" do
-      get :partial_render_parent
-      response.body.should == 'b:partial_render_parent => b:_partial_render_parent(a:_partial_render_parent)'
     end
   end
 end

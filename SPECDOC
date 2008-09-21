@@ -9,8 +9,6 @@ AController < TestController; inherit_views (an instance)
 - GET :in_abc should render a/in_abc
 - GET :in_a should render a/in_a
 - GET :in_ab should render a/in_ab
-- GET :render_parent should render a/render_parent
-- GET :inherited_template_path should render its contents
 
 BController < TestController; inherit_views 'a' (the class)
 - should be inherit views
@@ -23,10 +21,9 @@ BController < TestController; inherit_views 'a' (an instance)
 - GET :in_ab should render b/in_ab
 - GET :in_b should render b/in_b
 - GET :in_abc should render b/in_abc
-- GET :render_parent should render a/render_parent inside b/render_parent
-- GET :bad_render_parent should raise ActionView::TemplateError as there is no parent to render
 - GET :partial_in_bc should render b/partial_in_bc & b/_partial_in_bc
 - GET :partial_in_b should render b/partial_in_b & b/_partial_in_b
+- GET :collection_in_bc should render b/collection_in_bc then b/_partial_in_bc
 
 CController < BController (the class)
 - should be inherit views
@@ -40,9 +37,9 @@ CController < BController (an instance)
 - GET :in_b should render b/in_b
 - GET :in_abc should render c/in_abc
 - GET :in_c should render c/in_c
-- GET :render_parent should render a/render_parent inside b/render_parent inside c/render_parent
 - GET :partial_in_bc should render b/partial_in_bc then c/_partial_in_bc
 - GET :partial_in_b should render b/partial_in_b & b/_partial_in_b
+- GET :collection_in_bc should render b/collection_in_bc then c/_partial_in_bc
 
 DController < AController; inherit_views 'other' (the class)
 - should be inherit views
@@ -55,17 +52,6 @@ DController < AController; inherit_views 'other' (an instance)
 NormalController
 - GET :partial_from_c should render normal/partial_from_c, then c/_partial_in_bc
 
-InheritViews controllers in production mode
-- should have inherited_template_paths_cache
-- should cache calls to find_inherited_template_path
-- should maintain different caches in different classes
+Finished in 0.348816 seconds
 
-NoTemplateFinderController
-- .file_exists_in_template? should call template.file_exists?
-
-WithTemplateFinderController
-- .file_exists_in_template? should call template.finder.file_exists?
-
-Finished in 0.296507 seconds
-
-43 examples, 0 failures
+35 examples, 0 failures

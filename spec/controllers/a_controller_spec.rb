@@ -33,15 +33,5 @@ describe AController, " < TestController; inherit_views" do
       get :in_ab
       response.body.should == 'a:in_ab'
     end
-  
-    it "GET :render_parent should render a/render_parent" do
-      get :render_parent
-      response.body.should == 'a:render_parent'
-    end
-  
-    it "GET :inherited_template_path should render its contents" do
-      get :inherited_template_path
-      response.body.should == 'b/in_ab.html.erb'
-    end
   end
 end

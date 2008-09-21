@@ -27,9 +27,6 @@ Example:
   class BarController < FooController
     # will look for views in 'views/bar', then 'views/foo', then 'view/application'
   end
-
-You can also render the parent view in your views with
-  <%= render_parent %>
   
 See Ardes::InheritViews for more details
 

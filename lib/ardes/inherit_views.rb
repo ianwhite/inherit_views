@@ -66,9 +66,9 @@ module Ardes#:nodoc:
       # or the current controller's default path if no argument is given
       def inherit_views(*paths)
         class_eval do
-          unless included_modules.include? ::Ardes::InheritViews::ActionController::InstanceMethods
+          unless respond_to?(:inherit_views?)
             extend ClassMethods
-            include InstanceMethods
+            delegate :inherit_views?, :inherit_view_paths, :to => 'self.class'
           end
           self.inherit_views = true
           self.inherit_view_paths = paths if paths.size > 0
@@ -101,35 +101,16 @@ module Ardes#:nodoc:
           instance_variable_set('@inherit_view_paths', [controller_path] + ((paths - [controller_path]) + inherited))
         end
       end
-      
-      module InstanceMethods
-        # Return true if the controller is inheriting views
-        def inherit_views?
-          self.class.inherit_views?
-        end
-        
-        # Return the inherit view paths, in order of self to ancestor
-        def inherit_view_paths
-          self.class.inherit_view_paths
-        end
-      end
     end
     
     # Mixin for ActionView to enable inherit views functionality.  This module is
     # included into ActionView::Base
-    #
-    # Those familiar with the internals of ActionView will know that the <tt>@first_render</tt>
-    # instance var is used to keep track of what is the 'root' template being rendered.  A similar
-    # variable <tt>@current_render</tt> is introduced to keep track of the filename of the currently rendered
-    # file.  This enables +render_parent+ to know which to file render.
-    #
     module ActionView
       extend ActiveSupport::Memoizable
       
       def self.included(base)# :nodoc:
         base.class_eval do
           alias_method_chain :render, :inherit_views
-          
           alias_method :_orig_pick_template, :_pick_template
           
           def _pick_template(template_path)
@@ -165,18 +146,18 @@ module Ardes#:nodoc:
       def _pick_inherited_template_for_controller(template_path, controller)
         _orig_pick_template(template_path)
       rescue ::ActionView::MissingTemplate
-        if (controller.inherit_views? rescue false)
+        if controller.respond_to?(:inherit_views?) && controller.inherit_views?
           _pick_inherited_template(template_path, controller.inherit_view_paths)
         end
       end  
       
       def _pick_inherited_template(template_path, inherit_view_paths)
-        starting_path = inherit_view_paths.detect {|p| template_path =~ /^#{p}\//}
-        
-        if starting_path 
-          inherit_paths_above_starting_path = inherit_view_paths.slice(inherit_view_paths.index(starting_path)+1..-1)
+        # first, we grab the inherited paths that are 'above' the given template_path
+        if starting_path = inherit_view_paths.detect {|path| template_path =~ /^#{path}\//}
+          paths_above_template_path = inherit_view_paths.slice(inherit_view_paths.index(starting_path)+1..-1)
           
-          inherit_paths_above_starting_path.each do |path|
+          # then, search through each one, substibuting the inherited path
+          paths_above_template_path.each do |path|
             inherited_template = begin
               _orig_pick_template(template_path.sub(/^#{starting_path}/, path))
             rescue ::ActionView::MissingTemplate

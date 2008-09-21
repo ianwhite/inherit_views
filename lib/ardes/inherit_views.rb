@@ -95,10 +95,11 @@ module Ardes#:nodoc:
 
         # Set the inherit view paths, in order of self to ancestor.
         #
-        # The controller_path for self is always prepended to the front, no matter what the arguments
-        def inherit_view_paths=(paths)
-          inherited = inherit_view_paths - paths - [controller_path]
-          instance_variable_set('@inherit_view_paths', [controller_path] + ((paths - [controller_path]) + inherited))
+        # The controller_path for self is always prepended to the front, no matter what the arguments.
+        def inherit_view_paths=(new_paths)
+          new_paths -= [controller_path]
+          old_paths = inherit_view_paths - [controller_path] - new_paths
+          instance_variable_set('@inherit_view_paths', [controller_path] + new_paths + old_paths)
         end
       end
     end

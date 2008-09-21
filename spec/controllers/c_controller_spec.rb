@@ -65,5 +65,10 @@ describe CController, " < BController" do
       get :collection_in_bc
       response.body.should == 'b:collection_in_bc => c:_partial_in_bc'
     end
+    
+    it "GET :partial_render_parent should render b/partial_render_parent & c/_partial_render_parent & b/_partial_render_parent & a/_partial_render_parent" do
+      get :partial_render_parent
+      response.body.should == 'b:partial_render_parent => c:_partial_render_parent(b:_partial_render_parent(a:_partial_render_parent))'
+    end
   end
 end

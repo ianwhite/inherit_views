@@ -6,7 +6,7 @@ require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
 require 'rake/rdoctask'
 
-plugin_name = File.basename(File.dirname(__FILE__))
+plugin_name = 'inherit_views'
 
 task :default => :spec
 

@@ -6,7 +6,7 @@ inherit views on edge has slimmed down a bit (64 LOC).  The API is the same exce
 
 inherit_views is available for rails 2.0-stable and 2.1-stable.  To get this version checkout the rails-2.0-2.1 branch
 
-  git clone git://github.com/ianhwite/inherit_views rails-2.0-2.1
+  git clone git://github.com/ianwhite/inherit_views rails-2.0-2.1
 
 = inherit_views
 

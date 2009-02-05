@@ -1,5 +1,3 @@
-puts 'hi'
-
 require 'inherit_views'
 
 ActionController::Base.send :include, InheritViews::ActionController

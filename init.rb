@@ -1,4 +1,6 @@
-#require 'ardes/inherit_views'
+puts 'hi'
 
-#ActionController::Base.send :extend, Ardes::InheritViews::ActionController
-#ActionView::Base.send :include, Ardes::InheritViews::ActionView
+require 'inherit_views'
+
+ActionController::Base.send :include, InheritViews::ActionController
+ActionView::Base.send :include, InheritViews::ActionView

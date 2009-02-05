@@ -5,6 +5,4 @@ require File.expand_path(File.join(File.dirname(__FILE__), "../../../../config/e
 require 'spec/rails'
 
 Spec::Runner.configure do |config|
-  config.before(:each, :behaviour_type => :controller) do
-  end
 end

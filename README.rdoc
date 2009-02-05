@@ -2,11 +2,7 @@ http://plugins.ardes.com > inherit_views
 
 = Status
 
-inherit views on edge has slimmed down a bit (64 LOC).  The API is the same except that, for the moment, render_parent is out.
-
-inherit_views is available for rails 2.0-stable and 2.1-stable.  To get this version checkout the rails-2.0-2.1 branch
-
-  git clone git://github.com/ianwhite/inherit_views rails-2.0-2.1
+This Rails 2.3 branch is currently under development, and the specs are not all passing.
 
 = inherit_views
 

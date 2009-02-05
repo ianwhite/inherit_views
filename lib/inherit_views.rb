@@ -62,7 +62,7 @@ module InheritViews
       base.class_eval do
         def self.process_view_paths(value, inherit_view_paths = nil)
           returning InheritViews::PathSet.new(Array(value)) do |paths|
-            paths.inherit_view_paths = inherit_view_paths if inherit_view_paths
+            paths.inherit_view_paths = inherit_view_paths
           end
         end
         
@@ -75,5 +75,13 @@ module InheritViews
   
   class PathSet < ::ActionView::PathSet
     attr_accessor :inherit_view_paths
+    
+    def inherit_views?
+      inherit_view_paths.present?
+    end
+    
+    def find_template(original_template_path, format = nil)
+      super
+    end
   end
 end

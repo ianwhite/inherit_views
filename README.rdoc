@@ -1,6 +1,6 @@
-{ianwhite}[http://github.com/ianwhite]/inherit_views
+= {ianwhite}[http://github.com/ianwhite] / inherit_views
 
-= Status
+== Status
 
 inherit_views works with rails 2.x
 
@@ -10,7 +10,7 @@ If you're on <b>rails 2.2</b>, you want {inherit_views/rails-2.2}[http://github.
 
 If you're on <b>rails 2.0, or 2.1</b>, you want {inherit_views/rails-2.0-2.1}[http://github.com/ianwhite/inherit_views/tree/rails-2.0-2.1]
 
-= inherit_views
+== what does it do?
 
 This rails plugin allows your controllers to inherit their views from parent controllers.  The default behaviour is to inherit along the ancestor path of the controller, but you can also specify custom inherit view paths to search.
 
@@ -32,7 +32,7 @@ See InheritViews for more details
 
 NOTE: this plugin is not aimed at having multiple view paths for your controllers, which is addressed with the view_paths addition to ActionController::Base for rails 2.0.  Rather, within these view paths, you can inherit views from other controller paths.
 
-=== Testing & CI
+== Testing & CI
 
 RSpec is used for testing, so the tests are in <tt>spec/</tt> rather than
 <tt>test/</tt> Do rake --tasks for more details.
@@ -40,7 +40,7 @@ RSpec is used for testing, so the tests are in <tt>spec/</tt> rather than
 {garlic}[http://github.com/ianwhite/garlic] is used for CI, see garlic.rb for details on
 what versions of rails are tested.
 
-=== Contributors
+== Contributors
 
 Author: {Ian W. White}[http://github.com/ianwhite]
 

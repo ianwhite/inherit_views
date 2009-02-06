@@ -7,8 +7,8 @@ garlic do
 
   # first is rails target, last is inherit views branch
   [ 
-    {:rails => 'master',      :inherit_views => 'rails-2.3'},
-    {:rails => '2-2-stable',  :inherit_views => 'master'},
+    {:rails => 'master',      :inherit_views => 'master'},
+    {:rails => '2-2-stable',  :inherit_views => 'rails-2.2'},
     {:rails => '2-1-stable',  :inherit_views => 'rails-2.0-2.1'}
     #{:rails => '2-0-stable',  :inherit_views => 'rails-2.0-2.1'} rspec + raisl 2.0 is not playing nice at the moment
   ].each do |target|

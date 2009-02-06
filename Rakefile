@@ -46,6 +46,6 @@ Rake::RDocTask.new(:doc) do |t|
 end
 
 task :cruise do
-  sh "garlic clean && mkdir -p .garlic && (garlic all > .garlic/report.txt)"
+  sh "garlic clean && garlic all"
   puts "The build is GOOD"
 end

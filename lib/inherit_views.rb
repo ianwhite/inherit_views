@@ -41,7 +41,6 @@
 #     # will look for views in 'bar', 'you_can_go', and 'your_own_way'
 #     # (not 'far' or 'faz' from FooController)
 #   end
-#  module InheritViews
 module InheritViews
   # extension for ActionController::Base which enables inherit_views, this module is extended into
   # ActionController::Base
@@ -87,70 +86,52 @@ module InheritViews
       end
     end
   end
-  
-  # since there is no single point of entrance equivalent to _pick_template (that would have access
-  # to the current controller instance) in Rails 2.3, we need to create one ...
-  class ControllerTrackingPathSet < ::ActionView::PathSet
-    extend ActiveSupport::Memoizable
-    attr_reader :controller
-    
-    def initialize(view_paths, controller)
-      super(view_paths)
-      @controller = controller
+
+  # Mixin for ActionView to enable inherit views functionality.  This module is
+  # included into ActionView::Base
+  module ActionView
+    def self.included(base)
+      base.class_eval do
+        def view_paths=(value)
+          @view_paths = InheritViews::PathSet.new(value)
+        ensure
+          if (controller.inherit_views? rescue false)
+            @view_paths.inherit_view_paths = controller.inherit_view_paths
+          end
+        end
+      end
     end
-    
+  end
+  
+  # just like a normal path set, but can have an optional array of inherit_view_paths
+  # which will be used to look for a matching template if the original template is missing
+  class PathSet < ::ActionView::PathSet
+    extend ActiveSupport::Memoizable
+    attr_accessor :inherit_view_paths
+        
     alias_method :orig_find_template, :find_template
     
     def find_template(original_template_path, format = nil)
       super
     rescue ::ActionView::MissingTemplate => e
-      (inherited_view_paths? && pick_template_from_inherited_view_paths(original_template_path, format)) || raise(e)
+      (inherit_view_paths && find_template_from_inherit_view_paths(original_template_path, format)) || raise(e)
     end
     
-    def inherited_view_paths
-      @inherited_view_paths ||= controller.respond_to?(:inherit_views?) && controller.inherit_views? ? controller.inherit_view_paths : []
-    end
-    
-    def inherited_view_paths?
-      inherited_view_paths.any?
-    end
-    
-    def pick_template_from_inherited_view_paths(template_path, format)
-      # first, we grab the inherited paths that are 'above' the given template_path
-      if starting_path = inherited_view_paths.detect {|path| template_path.starts_with?("#{path}/")}
-        paths_above_template_path = inherited_view_paths.slice(inherited_view_paths.index(starting_path)+1..-1)
+    def find_template_from_inherit_view_paths(template_path, format)
+      # first, we grab the inherit view paths that are 'above' the given template_path
+      if starting_path = inherit_view_paths.detect {|path| template_path.starts_with?("#{path}/")}
+        paths_above_template_path = inherit_view_paths.slice(inherit_view_paths.index(starting_path)+1..-1)
 
-        # then, search through each path, substibuting the inherited path, returning the first found
-        paths_above_template_path.each do |path|
+        # then, search through each path, substituting the inherit view path, returning the first found
+        paths_above_template_path.detect do |path|
           inherited_template = begin
             orig_find_template(template_path.sub(/^#{starting_path}/, path), format)
           rescue ::ActionView::MissingTemplate
-            nil
           end
           return inherited_template if inherited_template
         end
       end
-      nil
     end
-    memoize :pick_template_from_inherited_view_paths
-    
-    def self.new_from_path_set(path_set, controller)
-      new(path_set.to_a, controller)
-    end
-  end
-
-  # Mixin for ActionView to enable inherit views functionality.  This module is
-  # included into ActionView::Base
-  module ActionView
-    
-    def view_paths_with_controller_tracking=(value)
-      self.view_paths_without_controller_tracking = value
-      @view_paths = ControllerTrackingPathSet.new_from_path_set(@view_paths, controller)
-    end
-    
-    def self.included(view_base_class)
-      view_base_class.alias_method_chain :view_paths=, :controller_tracking
-    end
-    
+    memoize :find_template_from_inherit_view_paths
   end
 end

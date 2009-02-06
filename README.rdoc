@@ -32,6 +32,14 @@ See InheritViews for more details
 
 NOTE: this plugin is not aimed at having multiple view paths for your controllers, which is addressed with the view_paths addition to ActionController::Base for rails 2.0.  Rather, within these view paths, you can inherit views from other controller paths.
 
+== Development mode
+
+Because of recent changes in the way 2.3 finds templates, using inherit_views may result in a noticeable slow-down in development mode.
+<b>This slow down will not occur in production mode.</b> (Thanks to {thedarkone}[http://github.com/thedarkone] for pointing this out,
+and showing me the reason why).
+
+If you are noticing a slowdown in development mode check out {rails-dev-boost}[http://github.com/thedarkone/rails-dev-boost].
+
 == Testing & CI
 
 RSpec is used for testing, so the tests are in <tt>spec/</tt> rather than

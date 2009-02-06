@@ -28,14 +28,12 @@ Example:
     # will look for views in 'views/bar', then 'views/foo', then 'view/application'
   end
   
-See Ardes::InheritViews for more details
+See InheritViews for more details
 
-=== Specs and Coverage
-* {SPECDOC}[link:files/SPECDOC.html] lists the specifications
-* {RSpec Report}[link:rspec_report.html] is a report of spec pass/fails
-* {RCov Report}[link:coverage/index.html] is the rcov report
-
-=== Testing
+=== Testing & CI
 
 RSpec is used for testing, so the tests are in <tt>spec/</tt> rather than
 <tt>test/</tt> Do rake --tasks for more details.
+
+{garlic}[http://github.com/ianwhite/garlic] is used for CI, see garlic.rb for details on
+what versions of rails are tested.

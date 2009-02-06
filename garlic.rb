@@ -23,7 +23,7 @@ garlic do
       end
       run do
         cd "vendor/plugins/inherit_views" do
-          sh "rake spec:rcov:verify"
+          sh "rake rcov:verify"
         end
       end
     end

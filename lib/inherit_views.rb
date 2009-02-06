@@ -95,9 +95,7 @@ module InheritViews
         def view_paths=(value)
           @view_paths = InheritViews::PathSet.new(value)
         ensure
-          if (controller.inherit_views? rescue false)
-            @view_paths.inherit_view_paths = controller.inherit_view_paths
-          end
+          @view_paths.inherit_view_paths = controller.inherit_view_paths if (controller.inherit_views? rescue false)
         end
       end
     end
@@ -117,18 +115,18 @@ module InheritViews
       (inherit_view_paths && find_template_from_inherit_view_paths(original_template_path, format)) || raise(e)
     end
     
+  protected
     def find_template_from_inherit_view_paths(template_path, format)
       # first, we grab the inherit view paths that are 'above' the given template_path
       if starting_path = inherit_view_paths.detect {|path| template_path.starts_with?("#{path}/")}
         paths_above_template_path = inherit_view_paths.slice(inherit_view_paths.index(starting_path)+1..-1)
-
         # then, search through each path, substituting the inherit view path, returning the first found
         paths_above_template_path.detect do |path|
-          inherited_template = begin
-            orig_find_template(template_path.sub(/^#{starting_path}/, path), format)
+          begin
+            return orig_find_template(template_path.sub(/^#{starting_path}/, path), format)
           rescue ::ActionView::MissingTemplate
+            next
           end
-          return inherited_template if inherited_template
         end
       end
     end

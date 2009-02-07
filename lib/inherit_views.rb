@@ -44,51 +44,55 @@
 module InheritViews
   # extension for ActionController::Base which enables inherit_views, this module is extended into
   # ActionController::Base
-  module ActionController
+  module ClassMethods
     # Specify this to have your controller inherit its views from the specified path
     # or the current controller's default path if no argument is given
     def inherit_views(*paths)
       class_eval do
-        unless respond_to?(:inherit_views?)
-          extend ClassMethods
-          delegate :inherit_views?, :inherit_view_paths, :to => 'self.class'
-        end
+        extend PathsContainer unless respond_to?(:inherit_views_paths)
         self.inherit_views = true
         self.inherit_view_paths = paths if paths.any?
       end
     end
-    
-    module ClassMethods
-      # Return true if the controller is inheriting views
-      def inherit_views?
-        read_inheritable_attribute('inherit_views') ? true : false
-      end
-      
-      # Instruct the controller that it is, or is not, inheriting views
-      def inherit_views=(bool)
-        write_inheritable_attribute('inherit_views', bool)
-      end
-      
-      # Return the inherit view paths, in order of self to ancestor
-      #
-      # Takes inherit_view_paths from the superclass when first read, and prepends the current controller_path
-      def inherit_view_paths
-        instance_variable_get('@inherit_view_paths') || instance_variable_set('@inherit_view_paths', [controller_path] + (superclass.inherit_view_paths rescue []))
-      end
-
-      # Set the inherit view paths, in order of self to ancestor.
-      #
-      # The controller_path for self is always prepended to the front, no matter what the arguments.
-      def inherit_view_paths=(new_paths)
-        new_paths -= [controller_path]
-        old_paths = inherit_view_paths - [controller_path] - new_paths
-        instance_variable_set('@inherit_view_paths', [controller_path] + new_paths + old_paths)
-      end
-    end
   end
 
-  # Mixin for ActionView to enable inherit views functionality.  This module is
-  # included into ActionView::Base
+  # class extension that enables inherit_view_paths to be calculated/set
+  #
+  # requires a class method called 'controller_path'
+  module PathsContainer
+    def self.extended(base)
+      base.class_eval do
+        delegate :inherit_views?, :inherit_view_paths, :to => 'self.class'
+      end
+    end
+    
+    # Return true if the class is inheriting views
+    def inherit_views?
+      read_inheritable_attribute('inherit_views') ? true : false
+    end
+    
+    # Instruct the class that it is, or is not, inheriting views
+    def inherit_views=(bool)
+      write_inheritable_attribute('inherit_views', bool)
+    end
+    
+    # Return the inherit view paths, in order of self to ancestor
+    # Takes inherit_view_paths from the superclass when first read, and prepends the current controller_path
+    def inherit_view_paths
+      instance_variable_get('@inherit_view_paths') || instance_variable_set('@inherit_view_paths', [controller_path] + (superclass.inherit_view_paths rescue []))
+    end
+
+    # Set the inherit view paths, in order of self to ancestor.
+    #
+    # The controller_path for self is always prepended to the front, no matter what the arguments.
+    def inherit_view_paths=(new_paths)
+      new_paths -= [controller_path]
+      old_paths = inherit_view_paths - [controller_path] - new_paths
+      instance_variable_set('@inherit_view_paths', [controller_path] + new_paths + old_paths)
+    end
+  end
+  
+  # Mixin for ActionView::Base to enable inherit views functionality
   module ActionView
     def self.included(base)
       base.class_eval do
@@ -105,18 +109,14 @@ module InheritViews
   # which will be used to look for a matching template if the original template is missing
   class PathSet < ::ActionView::PathSet
     extend ActiveSupport::Memoizable
-    attr_reader :inherit_view_paths
-    
-    def inherit_view_paths=(paths)
-      @inherit_view_paths = Array(paths)
-    end
+    attr_accessor :inherit_view_paths
     
     alias_method :orig_find_template, :find_template
     
     def find_template(original_template_path, format = nil)
       super
     rescue ::ActionView::MissingTemplate => e
-      find_template_from_inherit_view_paths(original_template_path, format) || raise(e)
+      (inherit_view_paths && find_template_from_inherit_view_paths(original_template_path, format)) || raise(e)
     end
 
   protected

@@ -1,4 +1,4 @@
-= {ianwhite}[http://github.com/ianwhite] / inherit_views
+= {ianwhite}[http://github.com/ianwhite] / inherit_views : {info}[http://ianwhite.github.com/inherit_views] / {api}[http://ianwhite.github.com/inherit_views/docs]
 
 == Status
 

@@ -54,7 +54,7 @@ module InheritViews
           delegate :inherit_views?, :inherit_view_paths, :to => 'self.class'
         end
         self.inherit_views = true
-        self.inherit_view_paths = paths if paths.size > 0
+        self.inherit_view_paths = paths if paths.any?
       end
     end
     
@@ -66,7 +66,7 @@ module InheritViews
       
       # Instruct the controller that it is, or is not, inheriting views
       def inherit_views=(bool)
-        write_inheritable_attribute('inherit_views', bool ? true : false)
+        write_inheritable_attribute('inherit_views', bool)
       end
       
       # Return the inherit view paths, in order of self to ancestor
@@ -105,23 +105,27 @@ module InheritViews
   # which will be used to look for a matching template if the original template is missing
   class PathSet < ::ActionView::PathSet
     extend ActiveSupport::Memoizable
-    attr_accessor :inherit_view_paths
-        
+    attr_reader :inherit_view_paths
+    
+    def inherit_view_paths=(paths)
+      @inherit_view_paths = Array(paths)
+    end
+    
     alias_method :orig_find_template, :find_template
     
     def find_template(original_template_path, format = nil)
       super
     rescue ::ActionView::MissingTemplate => e
-      (inherit_view_paths && find_template_from_inherit_view_paths(original_template_path, format)) || raise(e)
+      find_template_from_inherit_view_paths(original_template_path, format) || raise(e)
     end
-    
+
   protected
     def find_template_from_inherit_view_paths(template_path, format)
       # first, we grab the inherit view paths that are 'above' the given template_path
       if starting_path = inherit_view_paths.detect {|path| template_path.starts_with?("#{path}/")}
         paths_above_template_path = inherit_view_paths.slice(inherit_view_paths.index(starting_path)+1..-1)
         # then, search through each path, substituting the inherit view path, returning the first found
-        paths_above_template_path.detect do |path|
+        paths_above_template_path.each do |path|
           begin
             return orig_find_template(template_path.sub(/^#{starting_path}/, path), format)
           rescue ::ActionView::MissingTemplate
@@ -129,6 +133,7 @@ module InheritViews
           end
         end
       end
+      nil
     end
     memoize :find_template_from_inherit_view_paths
   end

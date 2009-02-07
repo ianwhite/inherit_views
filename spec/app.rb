@@ -31,12 +31,17 @@ end
 class NormalController < InheritViewsTestController
 end
 
-# used to test ActionMailer's use of views
-class Mailer < ActionMailer::Base
+# used to test ActionMailer's use of views is not affected
+class NormalMailer < ActionMailer::Base
   self.template_root = File.join(File.dirname(__FILE__), 'views_for_specs')
 
   def email
     recipients  'test@test.com'
     subject     'An email'
   end
+end
+
+# inherits views form normal mailer
+class InheritingMailer < NormalMailer
+  #inherit_views 'normal_mailer'
 end

@@ -30,3 +30,13 @@ end
 # used to test normal rails behaviour
 class NormalController < InheritViewsTestController
 end
+
+# used to test ActionMailer's use of views
+class Mailer < ActionMailer::Base
+  self.template_root = File.join(File.dirname(__FILE__), 'views_for_specs')
+
+  def email
+    recipients  'test@test.com'
+    subject     'An email'
+  end
+end

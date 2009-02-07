@@ -12,7 +12,8 @@ If you're on <b>rails 2.0, or 2.1</b>, you want {inherit_views/rails-2.0-2.1}[ht
 
 == what does it do?
 
-This rails plugin allows your controllers to inherit their views from parent controllers.  The default behaviour is to inherit along the ancestor path of the controller, but you can also specify custom inherit view paths to search.
+This rails plugin allows your controllers/mailers to inherit their views from parent controllers/mailers.
+The default behaviour is to inherit along the ancestor path of the controller/mailer, but you can also specify custom inherit view paths to search.
 
 Example:
 

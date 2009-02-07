@@ -43,5 +43,5 @@ end
 
 # inherits views form normal mailer
 class InheritingMailer < NormalMailer
-  #inherit_views 'normal_mailer'
+  inherit_views 'normal_mailer'
 end

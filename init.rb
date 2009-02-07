@@ -1,4 +1,5 @@
 require 'inherit_views'
 
-ActionController::Base.send :extend, InheritViews::ClassMethods
-ActionView::Base.send :include, InheritViews::ActionView
+defined?(ActionController) && ActionController::Base.extend(InheritViews::ActMethod)
+defined?(ActionMailer) && ActionMailer::Base.extend(InheritViews::ActMethod)
+defined?(ActionView) && ActionView::Base.send(:include, InheritViews::ActionView)

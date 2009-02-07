@@ -1,5 +1,5 @@
 class InheritViewsTestController < ActionController::Base
-  self.view_paths = [File.dirname(__FILE__) + '/fixtures/views']
+  self.view_paths = [File.join(File.dirname(__FILE__), 'views_for_specs')]
 end
 
 # :a controller is a normal controller with inherit_views
@@ -8,7 +8,7 @@ class AController < InheritViewsTestController
   inherit_views
   
   def render_non_existent_template
-    render :action => 'non_exitsent'
+    render :action => 'non_existent'
   end
 end
 

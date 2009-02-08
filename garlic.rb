@@ -16,8 +16,8 @@ garlic do
     target target[:rails], :branch => "origin/#{target[:rails]}" do
       prepare do
         plugin 'inherit_views', :branch => "origin/#{target[:inherit_views]}", :clone => true
-        plugin 'rspec', :as => 'rspec'
-        plugin 'rspec-rails', :as => 'rspec-rails' do
+        plugin 'rspec', :branch => 'origin/1.1-maintenance'
+        plugin 'rspec-rails', :branch => 'origin/1.1-maintenance' do
           sh "script/generate rspec -f"
         end
       end

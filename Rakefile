@@ -53,7 +53,7 @@ namespace :doc do
     `mv doctmp doc`
     `git add doc`
     `git commit -m "Update API docs"`
-    `git push origin gh-pages`
+    `git push git@github.com:ianwhite/inherit_views.git gh-pages`
     `git checkout master`
     `git branch -D gh-pages-tmp`
   end

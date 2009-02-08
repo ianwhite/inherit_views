@@ -47,15 +47,17 @@ end
 
 namespace :doc do
   task :gh_pages => :doc do
+    `git branch -m gh-pages orig-gh-pages`
     `mv doc doctmp`
-    `git checkout -b gh-pages-tmp origin/gh-pages`
+    `git checkout -b gh-pages origin/gh-pages`
     `rm -rf doc`
     `mv doctmp doc`
     `git add doc`
     `git commit -m "Update API docs"`
-    `git push origin gh-pages`
+    `git push`
     `git checkout master`
-    `git branch -D gh-pages-tmp`
+    `git branch -D gh-pages`
+    `git branch -m orig-gh-pages gh-pages`
   end
 end
 

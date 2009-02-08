@@ -61,5 +61,6 @@ end
 
 task :cruise do
   sh "garlic clean && garlic all"
+  Rake::Task['doc:gh_pages'].invoke
   puts "The build is GOOD"
 end

@@ -63,5 +63,9 @@ describe BController, " < TestController; inherit_views 'a'" do
       get :partial_render_parent
       response.body.should == "b:partial_render_parent => b:_partial_render_parent(a:_parent_render_parent)"
     end
+    
+    it "GET :bad_render_parent should rasie TemplateError" do
+      lambda { get :bad_render_parent }.should raise_error(ActionView::TemplateError)
+    end
   end
 end

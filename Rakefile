@@ -45,7 +45,24 @@ Rake::RDocTask.new(:doc) do |t|
   t.rdoc_files.include('lib/**/*.rb')
 end
 
+namespace :doc do
+  task :gh_pages => :doc do
+    `git branch -m gh-pages orig-gh-pages`
+    `mv doc doctmp`
+    `git checkout -b gh-pages origin/gh-pages`
+    `rm -rf doc`
+    `mv doctmp doc`
+    `git add doc`
+    `git commit -m "Update API docs"`
+    `git push`
+    `git checkout master`
+    `git branch -D gh-pages`
+    `git branch -m orig-gh-pages gh-pages`
+  end
+end
+
 task :cruise do
   sh "garlic clean && garlic all"
+  Rake::Task['doc:gh_pages'].invoke
   puts "The build is GOOD"
 end

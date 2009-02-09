@@ -94,6 +94,18 @@ module Ardes#:nodoc:
     module ActionView
       def self.included(base)# :nodoc:
         base.class_eval do
+          # Add ability for templates to render their inherited parent
+          #
+          #   <%= render :parent %>
+          def render_with_parent(*args, &block)
+            if args.first == :parent
+              args.shift
+              args.first[:file] = _pick_template_from_inherit_view_paths(self.template.to_s, controller.inherit_view_paths)
+            end
+            render_without_parent(*args, &block)
+          end
+          alias_method_chain :render, :parent
+          
         private
           alias_method :_orig_pick_template, :_pick_template
           

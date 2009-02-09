@@ -100,7 +100,7 @@ module Ardes#:nodoc:
           def render_with_parent(*args, &block)
             if args.first == :parent
               args.shift
-              args.first[:file] = _pick_template_from_inherit_view_paths(self.template.to_s, controller.inherit_view_paths)
+              args.first[:file] = _pick_template_from_inherit_view_paths(self.template.to_s, controller.inherit_view_paths) or raise ::ActionView::MissingTemplate.new(load_paths, self.template.to_s)
             end
             render_without_parent(*args, &block)
           end

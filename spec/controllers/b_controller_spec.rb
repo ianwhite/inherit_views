@@ -52,5 +52,15 @@ describe BController, " < TestController; inherit_views 'a'" do
       get :collection_in_bc
       response.body.should == 'b:collection_in_bc => b:_partial_in_bc'
     end
+    
+    it "GET :render_parent should render a/render_parent inside b/render_parent" do
+      get :render_parent
+      response.body.should == "b:render_parent(a:render_parent)"
+    end
+
+    it "GET :partial_render_parent should render a/_partial_render_parent inside b/_partial_render_parent" do
+      get :partial_render_parent
+      response.body.should == "b:partial_render_parent => b:_partial_render_parent(a:_parent_render_parent)"
+    end
   end
 end

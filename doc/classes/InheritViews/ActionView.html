@@ -389,9 +389,9 @@ included
 130:       <span class="ruby-identifier">base</span>.<span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>
 131:         <span class="ruby-comment cmt"># use InheritViews::PathSet, and give it my controller's inherit_view_paths</span>
 132:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">view_paths=</span>(<span class="ruby-identifier">value</span>)
-133:           <span class="ruby-ivar">@view_paths</span> = <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">value</span>)
-134:         <span class="ruby-keyword kw">ensure</span>
-135:           <span class="ruby-ivar">@view_paths</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_views?</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">false</span>)
+133:           <span class="ruby-ivar">@view_paths</span> = <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">value</span>).<span class="ruby-identifier">tap</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">paths</span><span class="ruby-operator">|</span>
+134:             <span class="ruby-identifier">paths</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_views?</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">false</span>)
+135:           <span class="ruby-keyword kw">end</span>
 136:         <span class="ruby-keyword kw">end</span>
 137:         
 138:         <span class="ruby-identifier">alias_method_chain</span> <span class="ruby-identifier">:render</span>, <span class="ruby-identifier">:parent</span>
@@ -447,9 +447,9 @@ controller&#8216;s inherit_view_paths
 
 <p class="source_link" id="M000007-show-link"><a onclick="toggle('M000007-source'); toggleText('M000007-link'); return false;" href="#" id="M000007-link">Show source...</a></p><div class="source" id="M000007-source"><pre>     <span class="ruby-comment cmt"># File lib/inherit_views.rb, line 132</span>
 132:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">view_paths=</span>(<span class="ruby-identifier">value</span>)
-133:           <span class="ruby-ivar">@view_paths</span> = <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">value</span>)
-134:         <span class="ruby-keyword kw">ensure</span>
-135:           <span class="ruby-ivar">@view_paths</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_views?</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">false</span>)
+133:           <span class="ruby-ivar">@view_paths</span> = <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">value</span>).<span class="ruby-identifier">tap</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">paths</span><span class="ruby-operator">|</span>
+134:             <span class="ruby-identifier">paths</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_views?</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">false</span>)
+135:           <span class="ruby-keyword kw">end</span>
 136:         <span class="ruby-keyword kw">end</span></pre></div>
 </div>
 

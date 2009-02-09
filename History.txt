@@ -1,3 +1,5 @@
+* Backported ActionMailer support from master branch
+
 * render_parent is replaced with render :parent (works for normal templates and partials)
 
 * Removed render_parent for now (in edge rails version)

@@ -6,6 +6,10 @@ describe 'Mailer specs' do
     ActionMailer::Base.perform_deliveries = true
   end
   
+  before :each do
+    ActionMailer::Base.deliveries.clear
+  end
+  
   describe NormalMailer do
     before :each do
       NormalMailer.deliver_email

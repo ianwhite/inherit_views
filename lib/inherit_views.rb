@@ -130,9 +130,9 @@ module InheritViews
       base.class_eval do
         # use InheritViews::PathSet, and give it my controller's inherit_view_paths
         def view_paths=(value)
-          @view_paths = InheritViews::PathSet.new(value)
-        ensure
-          @view_paths.inherit_view_paths = controller.inherit_view_paths if (controller.inherit_views? rescue false)
+          @view_paths = InheritViews::PathSet.new(value).tap do |paths|
+            paths.inherit_view_paths = controller.inherit_view_paths if (controller.inherit_views? rescue false)
+          end
         end
         
         alias_method_chain :render, :parent

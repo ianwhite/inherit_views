@@ -33,6 +33,21 @@ See InheritViews for more details
 
 NOTE: this plugin is not aimed at having multiple view paths for your controllers, which is addressed with the view_paths addition to ActionController::Base for rails 2.0.  Rather, within these view paths, you can inherit views from other controller paths.
 
+== In templates
+
+You can render the 'parent' template from within a template if you so choose.  This works for partials and top-level templates alike.
+
+<b>foo/view.html.erb</b>
+  <h1>Foo View</h1>
+    
+<b>bar/view.html.erb</b>
+  <%= render :parent %>
+  <h2>With some 'bar' action</h2>
+  
+rendering bar/view (with the controller setup described above):
+  <h1>Foo View</h1>
+  <h2>With some 'bar' action</h2>
+    
 == Development mode
 
 Because of recent changes in the way 2.3 finds templates, using inherit_views may result in a noticeable slow-down in development mode.

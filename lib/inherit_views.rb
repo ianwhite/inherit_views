@@ -101,13 +101,12 @@ module InheritViews
     def find_template(original_template_path, format = nil)
       super
     rescue ::ActionView::MissingTemplate => e
-      (inherit_view_paths && find_template_from_inherit_view_paths(original_template_path, format)) || raise(e)
+      find_parent_template(original_template_path, format) || raise(e)
     end
 
-  protected
-    def find_template_from_inherit_view_paths(template_path, format)
+    def find_parent_template(template_path, format)
       # first, we grab the inherit view paths that are 'above' the given template_path
-      if starting_path = inherit_view_paths.detect {|path| template_path.starts_with?("#{path}/")}
+      if inherit_view_paths.present? && (starting_path = inherit_view_paths.detect {|path| template_path.starts_with?("#{path}/")})
         paths_above_template_path = inherit_view_paths.slice(inherit_view_paths.index(starting_path)+1..-1)
         # then, search through each path, substituting the inherit view path, returning the first found
         paths_above_template_path.each do |path|
@@ -120,7 +119,7 @@ module InheritViews
       end
       nil
     end
-    memoize :find_template_from_inherit_view_paths
+    memoize :find_parent_template
   end
   
   # Mixin for ActionView::Base to enable inherit views functionality
@@ -132,7 +131,18 @@ module InheritViews
         ensure
           @view_paths.inherit_view_paths = controller.inherit_view_paths if (controller.inherit_views? rescue false)
         end
+        
+        alias_method_chain :render, :parent
       end
+    end
+    
+    # Extension for render which enables <%= render :parent %> (works for partials and top-level templates)
+    def render_with_parent(*args, &block)
+      if args.first == :parent
+        args.shift
+        args.first[:file] = view_paths.find_parent_template(template.to_s, template.format)
+      end
+      render_without_parent(*args, &block)
     end
   end
 end

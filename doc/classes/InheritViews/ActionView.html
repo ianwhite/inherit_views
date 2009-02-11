@@ -384,19 +384,19 @@ included
 </a>
 </h3>
 
-<p class="source_link" id="M000006-show-link"><a onclick="toggle('M000006-source'); toggleText('M000006-link'); return false;" href="#" id="M000006-link">Show source...</a></p><div class="source" id="M000006-source"><pre>     <span class="ruby-comment cmt"># File lib/inherit_views.rb, line 129</span>
-129:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">included</span>(<span class="ruby-identifier">base</span>)
-130:       <span class="ruby-identifier">base</span>.<span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>
-131:         <span class="ruby-comment cmt"># use InheritViews::PathSet, and give it my controller's inherit_view_paths</span>
-132:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">view_paths=</span>(<span class="ruby-identifier">value</span>)
-133:           <span class="ruby-ivar">@view_paths</span> = <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">value</span>).<span class="ruby-identifier">tap</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">paths</span><span class="ruby-operator">|</span>
-134:             <span class="ruby-identifier">paths</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_views?</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">false</span>)
-135:           <span class="ruby-keyword kw">end</span>
-136:         <span class="ruby-keyword kw">end</span>
-137:         
-138:         <span class="ruby-identifier">alias_method_chain</span> <span class="ruby-identifier">:render</span>, <span class="ruby-identifier">:parent</span>
-139:       <span class="ruby-keyword kw">end</span>
-140:     <span class="ruby-keyword kw">end</span></pre></div>
+<p class="source_link" id="M000006-show-link"><a onclick="toggle('M000006-source'); toggleText('M000006-link'); return false;" href="#" id="M000006-link">Show source...</a></p><div class="source" id="M000006-source"><pre>     <span class="ruby-comment cmt"># File lib/inherit_views.rb, line 127</span>
+127:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">included</span>(<span class="ruby-identifier">base</span>)
+128:       <span class="ruby-identifier">base</span>.<span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>
+129:         <span class="ruby-comment cmt"># use InheritViews::PathSet, and give it my controller's inherit_view_paths</span>
+130:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">view_paths=</span>(<span class="ruby-identifier">value</span>)
+131:           <span class="ruby-ivar">@view_paths</span> = <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">value</span>).<span class="ruby-identifier">tap</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">paths</span><span class="ruby-operator">|</span>
+132:             <span class="ruby-identifier">paths</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_views?</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">false</span>)
+133:           <span class="ruby-keyword kw">end</span>
+134:         <span class="ruby-keyword kw">end</span>
+135:         
+136:         <span class="ruby-identifier">alias_method_chain</span> <span class="ruby-identifier">:render</span>, <span class="ruby-identifier">:parent</span>
+137:       <span class="ruby-keyword kw">end</span>
+138:     <span class="ruby-keyword kw">end</span></pre></div>
 </div>
 
 
@@ -419,14 +419,14 @@ Extension for render which enables &lt;%= render :parent %&gt; (works for
 partials and top-level templates)
 </p>
 
-<p class="source_link" id="M000008-show-link"><a onclick="toggle('M000008-source'); toggleText('M000008-link'); return false;" href="#" id="M000008-link">Show source...</a></p><div class="source" id="M000008-source"><pre>     <span class="ruby-comment cmt"># File lib/inherit_views.rb, line 143</span>
-143:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">render_with_parent</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-144:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:parent</span>
-145:         <span class="ruby-identifier">args</span>.<span class="ruby-identifier">shift</span>
-146:         <span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>[<span class="ruby-identifier">:file</span>] = <span class="ruby-identifier">view_paths</span>.<span class="ruby-identifier">find_parent_template</span>(<span class="ruby-identifier">template</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-identifier">template</span>.<span class="ruby-identifier">format</span>)
-147:       <span class="ruby-keyword kw">end</span>
-148:       <span class="ruby-identifier">render_without_parent</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-149:     <span class="ruby-keyword kw">end</span></pre></div>
+<p class="source_link" id="M000008-show-link"><a onclick="toggle('M000008-source'); toggleText('M000008-link'); return false;" href="#" id="M000008-link">Show source...</a></p><div class="source" id="M000008-source"><pre>     <span class="ruby-comment cmt"># File lib/inherit_views.rb, line 141</span>
+141:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">render_with_parent</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+142:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:parent</span>
+143:         <span class="ruby-identifier">args</span>.<span class="ruby-identifier">shift</span>
+144:         <span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>[<span class="ruby-identifier">:file</span>] = <span class="ruby-identifier">view_paths</span>.<span class="ruby-identifier">find_parent_template</span>(<span class="ruby-identifier">template</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-identifier">template</span>.<span class="ruby-identifier">format</span>)
+145:       <span class="ruby-keyword kw">end</span>
+146:       <span class="ruby-identifier">render_without_parent</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+147:     <span class="ruby-keyword kw">end</span></pre></div>
 </div>
 
 <a class="small" name="M000007"><br/></a>
@@ -445,12 +445,12 @@ use <a href="PathSet.html">InheritViews::PathSet</a>, and give it my
 controller&#8216;s inherit_view_paths
 </p>
 
-<p class="source_link" id="M000007-show-link"><a onclick="toggle('M000007-source'); toggleText('M000007-link'); return false;" href="#" id="M000007-link">Show source...</a></p><div class="source" id="M000007-source"><pre>     <span class="ruby-comment cmt"># File lib/inherit_views.rb, line 132</span>
-132:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">view_paths=</span>(<span class="ruby-identifier">value</span>)
-133:           <span class="ruby-ivar">@view_paths</span> = <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">value</span>).<span class="ruby-identifier">tap</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">paths</span><span class="ruby-operator">|</span>
-134:             <span class="ruby-identifier">paths</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_views?</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">false</span>)
-135:           <span class="ruby-keyword kw">end</span>
-136:         <span class="ruby-keyword kw">end</span></pre></div>
+<p class="source_link" id="M000007-show-link"><a onclick="toggle('M000007-source'); toggleText('M000007-link'); return false;" href="#" id="M000007-link">Show source...</a></p><div class="source" id="M000007-source"><pre>     <span class="ruby-comment cmt"># File lib/inherit_views.rb, line 130</span>
+130:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">view_paths=</span>(<span class="ruby-identifier">value</span>)
+131:           <span class="ruby-ivar">@view_paths</span> = <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">value</span>).<span class="ruby-identifier">tap</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">paths</span><span class="ruby-operator">|</span>
+132:             <span class="ruby-identifier">paths</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_views?</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">false</span>)
+133:           <span class="ruby-keyword kw">end</span>
+134:         <span class="ruby-keyword kw">end</span></pre></div>
 </div>
 
 

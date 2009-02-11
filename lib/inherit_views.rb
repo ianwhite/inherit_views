@@ -93,7 +93,6 @@ module InheritViews
   # just like a normal path set, but can have an optional array of inherit_view_paths
   # which will be used to look for a matching template if the original template is missing
   class PathSet < ::ActionView::PathSet
-    extend ActiveSupport::Memoizable
     attr_accessor :inherit_view_paths
     
     alias_method :orig_find_template, :find_template
@@ -121,7 +120,6 @@ module InheritViews
       end
       raise ::ActionView::MissingTemplate.new(self, template_path, format)
     end
-    memoize :find_parent_template
   end
   
   # Mixin for ActionView::Base to enable inherit views functionality

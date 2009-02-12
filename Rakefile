@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(rspec_base) if File.exist?(rspec_base) and !$LOAD_PATH.includ
 
 require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
-require 'rake/rdoctask'
+require 'hanna/rdoctask'
 
 plugin_name = 'inherit_views'
 
@@ -35,14 +35,12 @@ end
 task :rdoc => :doc
 
 desc "Generate rdoc for #{plugin_name}"
-Rake::RDocTask.new(:doc) do |t|
-  t.rdoc_dir = 'doc'
-  t.main     = 'README.rdoc'
-  t.title    = "#{plugin_name}"
-  t.template = ENV['RDOC_TEMPLATE']
-  t.options  = ['--line-numbers', '--inline-source']
-  t.rdoc_files.include('README.rdoc', 'History.txt', 'License.txt')
-  t.rdoc_files.include('lib/**/*.rb')
+Rake::RDocTask.new(:doc) do |d|
+  d.rdoc_dir = 'doc'
+  d.main     = 'README.rdoc'
+  d.title    = "#{plugin_name} API Documentation"
+  d.rdoc_files.include('README.rdoc', 'History.txt', 'License.txt').
+    include('lib/**/*.rb')
 end
 
 namespace :doc do

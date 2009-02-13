@@ -48,14 +48,6 @@ rendering bar/view (with the controller setup described above):
   <h1>Foo View</h1>
   <h2>With some 'bar' action</h2>
     
-== Development mode
-
-Because of recent changes in the way 2.3 finds templates, using inherit_views may result in a noticeable slow-down in development mode.
-<b>This slow down will not occur in production mode.</b> (Thanks to {thedarkone}[http://github.com/thedarkone] for pointing this out,
-and showing me the reason why).
-
-If you are noticing a slowdown in development mode check out {rails-dev-boost}[http://github.com/thedarkone/rails-dev-boost].
-
 == Testing & CI
 
 RSpec is used for testing, so the tests are in <tt>spec/</tt> rather than

@@ -50,11 +50,13 @@ namespace :doc do
     mv 'doc', 'newdoc'
     on_gh_pages do
       if doc_changed_sha?('newdoc', 'doc')
+        puts "doc has changed, pushing to gh-pages"
         `rm -rf doc && mv newdoc doc`
         `git add doc`
         `git commit -a -m "Update API docs"`
         `git push`
       else
+        puts "doc is unchanged"
         rm_rf 'newdoc'
       end
     end

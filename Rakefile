@@ -49,6 +49,7 @@ namespace :doc do
     `git branch -m gh-pages orig-gh-pages > /dev/null 2>&1`
     `mv doc doctmp`
     `git checkout -b gh-pages origin/gh-pages`
+    `git pull`
     if `cat doc/index.html | grep "<title>"` != `cat doctmp/index.html | grep "<title>"`
       `rm -rf doc`
       `mv doctmp doc`

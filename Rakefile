@@ -5,7 +5,6 @@ $LOAD_PATH.unshift(rspec_base) if File.exist?(rspec_base) and !$LOAD_PATH.includ
 require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
 require 'hanna/rdoctask'
-require 'grancher/task'
 
 plugin_name = 'inherit_views'
 
@@ -33,32 +32,45 @@ namespace :rcov do
   end
 end
 
-task :rdoc => :doc
-
-desc "Generate rdoc for #{plugin_name}"
-Rake::RDocTask.new(:doc) do |d|
-  d.rdoc_dir = 'doc'
-  d.main     = 'README.rdoc'
-  d.title    = "#{plugin_name} API Docs (#{`git log HEAD -1 --pretty=format:"%H"`[0..6]})"
-  d.rdoc_files.include('README.rdoc', 'History.txt', 'License.txt', 'Todo.txt').
-    include('lib/**/*.rb')
-end
+task :rdoc => 'doc:build'
+task :doc => 'doc:build'
 
 namespace :doc do
-  task :gh_pages => :doc do
+  Rake::RDocTask.new(:build) do |d|
+    d.rdoc_dir = 'doc'
+    d.main     = 'README.rdoc'
+    d.title    = "#{plugin_name} API Docs (#{current_sha})"
+    d.rdoc_files.include('README.rdoc', 'History.txt', 'License.txt', 'Todo.txt', 'lib/**/*.rb')
+  end
+  
+  task :push => 'doc:build' do
+    mv 'doc', 'newdoc'
+    on_gh_pages do
+      if doc_changed_sha?('newdoc', 'doc')
+        `rm -rf doc && mv newdoc doc`
+        `git add doc`
+        `git commit -a -m "Update API docs"`
+        `git push`
+      else
+        rm_rf 'newdoc'
+      end
+    end
+  end
+  
+  def doc_changed_sha?(docpath1, docpath2)
+    `cat #{docpath1}/index.html | grep "<title>"` != `cat #{docpath2}/index.html | grep "<title>"`
+  end
+  
+  def current_sha
+    `git log HEAD -1 --pretty=format:"%H"`[0..6]
+  end
+  
+  def on_gh_pages(&block)
     `git branch -m gh-pages orig-gh-pages > /dev/null 2>&1`
-    `mv doc doctmp`
     `git checkout -b gh-pages origin/gh-pages`
     `git pull`
-    if `cat doc/index.html | grep "<title>"` != `cat doctmp/index.html | grep "<title>"`
-      `rm -rf doc`
-      `mv doctmp doc`
-      `git add doc`
-      `git commit -a -m "Update API docs"`
-      `git push`
-    else
-      `rm -rf doctmp`
-    end
+    yield
+  ensure
     `git checkout master`
     `git branch -D gh-pages`
     `git branch -m orig-gh-pages gh-pages > /dev/null 2>&1`
@@ -67,6 +79,6 @@ end
 
 task :cruise do
   sh "garlic clean && garlic all"
-  Rake::Task['doc:gh_pages'].invoke
+  Rake::Task['doc:push'].invoke
   puts "The build is GOOD"
 end

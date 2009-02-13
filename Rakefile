@@ -36,6 +36,9 @@ task :rdoc => 'doc:build'
 task :doc => 'doc:build'
 
 namespace :doc do
+  
+  current_sha = `git log HEAD -1 --pretty=format:"%H"`[0..6]
+  
   Rake::RDocTask.new(:build) do |d|
     d.rdoc_dir = 'doc'
     d.main     = 'README.rdoc'
@@ -59,10 +62,6 @@ namespace :doc do
   
   def doc_changed_sha?(docpath1, docpath2)
     `cat #{docpath1}/index.html | grep "<title>"` != `cat #{docpath2}/index.html | grep "<title>"`
-  end
-  
-  def current_sha
-    `git log HEAD -1 --pretty=format:"%H"`[0..6]
   end
   
   def on_gh_pages(&block)

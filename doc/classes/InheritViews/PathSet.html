@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Class: InheritViews::PathSet [inherit_views API Docs (a2b9377)]</title>
+    <title>Class: InheritViews::PathSet [inherit_views API Docs (22082ed)]</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../.././rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -52,9 +52,9 @@
             <h2>Methods</h2>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000012">find_parent_template</a></li>
-              <li><a href="#M000010">find_template</a></li>
-              <li><a href="#M000011">orig_find_template</a></li>
+              <li><a href="#M000013">find_parent_template</a></li>
+              <li><a href="#M000011">find_template</a></li>
+              <li><a href="#M000012">orig_find_template</a></li>
             </ol>
           </div>
           <div id='section'>
@@ -72,8 +72,8 @@
             </div>
             <div id='methods'>
               <h2>Public instance methods</h2>
-              <div class='public-instance method' id='method-M000012'>
-                <a name='M000012'>      </a>
+              <div class='public-instance method' id='method-M000013'>
+                <a name='M000013'>      </a>
                 <div class='synopsis'>
                   <span class='name'>find_parent_template</span>
                   <span class='arguments'>(template_path, format)</span>
@@ -85,14 +85,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000012-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000013-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000012-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 108</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_parent_template</span>(<span class="ruby-identifier">template_path</span>, <span class="ruby-identifier">format</span>)&#x000A;      <span class="ruby-comment cmt"># first, we grab the inherit view paths that are 'above' the given template_path</span>&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">inherit_view_paths</span>.<span class="ruby-identifier">present?</span> <span class="ruby-operator">&amp;&amp;</span> (<span class="ruby-identifier">starting_path</span> = <span class="ruby-identifier">inherit_view_paths</span>.<span class="ruby-identifier">detect</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span> <span class="ruby-identifier">template_path</span>.<span class="ruby-identifier">starts_with?</span>(<span class="ruby-node">&quot;#{path}/&quot;</span>)})&#x000A;        <span class="ruby-identifier">parent_paths</span> = <span class="ruby-identifier">inherit_view_paths</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-identifier">inherit_view_paths</span>.<span class="ruby-identifier">index</span>(<span class="ruby-identifier">starting_path</span>)<span class="ruby-operator">+</span><span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>)&#x000A;        <span class="ruby-comment cmt"># then, search through each path, substituting the inherit view path, returning the first found</span>&#x000A;        <span class="ruby-identifier">parent_paths</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-keyword kw">begin</span>&#x000A;            <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">orig_find_template</span>(<span class="ruby-identifier">template_path</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-node">/^#{starting_path}/</span>, <span class="ruby-identifier">path</span>), <span class="ruby-identifier">format</span>)&#x000A;          <span class="ruby-keyword kw">rescue</span> <span class="ruby-operator">::</span><span class="ruby-constant">ActionView</span><span class="ruby-operator">::</span><span class="ruby-constant">MissingTemplate</span>&#x000A;            <span class="ruby-keyword kw">next</span>&#x000A;          <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-identifier">raise</span> <span class="ruby-operator">::</span><span class="ruby-constant">ActionView</span><span class="ruby-operator">::</span><span class="ruby-constant">MissingTemplate</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword kw">self</span>, <span class="ruby-identifier">template_path</span>, <span class="ruby-identifier">format</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000013-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 108</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_parent_template</span>(<span class="ruby-identifier">template_path</span>, <span class="ruby-identifier">format</span>)&#x000A;      <span class="ruby-comment cmt"># first, we grab the inherit view paths that are 'above' the given template_path</span>&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">inherit_view_paths</span>.<span class="ruby-identifier">present?</span> <span class="ruby-operator">&amp;&amp;</span> (<span class="ruby-identifier">starting_path</span> = <span class="ruby-identifier">inherit_view_paths</span>.<span class="ruby-identifier">detect</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span> <span class="ruby-identifier">template_path</span>.<span class="ruby-identifier">starts_with?</span>(<span class="ruby-node">&quot;#{path}/&quot;</span>)})&#x000A;        <span class="ruby-identifier">parent_paths</span> = <span class="ruby-identifier">inherit_view_paths</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-identifier">inherit_view_paths</span>.<span class="ruby-identifier">index</span>(<span class="ruby-identifier">starting_path</span>)<span class="ruby-operator">+</span><span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>)&#x000A;        <span class="ruby-comment cmt"># then, search through each path, substituting the inherit view path, returning the first found</span>&#x000A;        <span class="ruby-identifier">parent_paths</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-keyword kw">begin</span>&#x000A;            <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">orig_find_template</span>(<span class="ruby-identifier">template_path</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-node">/^#{starting_path}/</span>, <span class="ruby-identifier">path</span>), <span class="ruby-identifier">format</span>)&#x000A;          <span class="ruby-keyword kw">rescue</span> <span class="ruby-operator">::</span><span class="ruby-constant">ActionView</span><span class="ruby-operator">::</span><span class="ruby-constant">MissingTemplate</span>&#x000A;            <span class="ruby-keyword kw">next</span>&#x000A;          <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-identifier">raise</span> <span class="ruby-operator">::</span><span class="ruby-constant">ActionView</span><span class="ruby-operator">::</span><span class="ruby-constant">MissingTemplate</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword kw">self</span>, <span class="ruby-identifier">template_path</span>, <span class="ruby-identifier">format</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000010'>
-                <a name='M000010'>      </a>
+              <div class='public-instance method' id='method-M000011'>
+                <a name='M000011'>      </a>
                 <div class='synopsis'>
                   <span class='name'>find_template</span>
                   <span class='arguments'>(original_template_path, format = nil)</span>
@@ -103,21 +103,21 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000010-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000011-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000010-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 101</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_template</span>(<span class="ruby-identifier">original_template_path</span>, <span class="ruby-identifier">format</span> = <span class="ruby-keyword kw">nil</span>)&#x000A;      <span class="ruby-keyword kw">super</span>&#x000A;    <span class="ruby-keyword kw">rescue</span> <span class="ruby-operator">::</span><span class="ruby-constant">ActionView</span><span class="ruby-operator">::</span><span class="ruby-constant">MissingTemplate</span>&#x000A;      <span class="ruby-identifier">find_parent_template</span>(<span class="ruby-identifier">original_template_path</span>, <span class="ruby-identifier">format</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000011-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 101</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_template</span>(<span class="ruby-identifier">original_template_path</span>, <span class="ruby-identifier">format</span> = <span class="ruby-keyword kw">nil</span>)&#x000A;      <span class="ruby-keyword kw">super</span>&#x000A;    <span class="ruby-keyword kw">rescue</span> <span class="ruby-operator">::</span><span class="ruby-constant">ActionView</span><span class="ruby-operator">::</span><span class="ruby-constant">MissingTemplate</span>&#x000A;      <span class="ruby-identifier">find_parent_template</span>(<span class="ruby-identifier">original_template_path</span>, <span class="ruby-identifier">format</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000011'>
-                <a name='M000011'>      </a>
+              <div class='public-instance method' id='method-M000012'>
+                <a name='M000012'>      </a>
                 <div class='synopsis'>
                   <span class='name'>orig_find_template</span>
                   <span class='arguments'>(original_template_path, format = nil)</span>
                 </div>
                 <div class='description'>
                   <p>
-                  Alias for <a href="PathSet.html#M000010">find_template</a>
+                  Alias for <a href="PathSet.html#M000011">find_template</a>
                   </p>
                 </div>
               </div>

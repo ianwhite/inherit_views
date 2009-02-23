@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Module: InheritViews::ActMethod [inherit_views API Docs (a2b9377)]</title>
+    <title>Module: InheritViews::ActMethod [inherit_views API Docs (22082ed)]</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../.././rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -40,21 +40,21 @@
           <div id='description'>
             <p>
             class extension which enables specification of <a
-            href="ActMethod.html#M000009">inherit_views</a>
+            href="ActMethod.html#M000010">inherit_views</a>
             </p>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000009">inherit_views</a></li>
+              <li><a href="#M000010">inherit_views</a></li>
             </ol>
           </div>
           <div id='section'>
             <div id='methods'>
               <h2>Public instance methods</h2>
-              <div class='public-instance method' id='method-M000009'>
-                <a name='M000009'>      </a>
+              <div class='public-instance method' id='method-M000010'>
+                <a name='M000010'>      </a>
                 <div class='synopsis'>
                   <span class='name'>inherit_views</span>
                   <span class='arguments'>(*paths)</span>
@@ -67,10 +67,10 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000009-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000010-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000009-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 49</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">inherit_views</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">paths</span>)&#x000A;      <span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-identifier">extend</span> <span class="ruby-constant">PathsContainer</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:inherit_views_paths</span>)&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">inherit_views</span> = <span class="ruby-keyword kw">true</span>&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">paths</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">paths</span>.<span class="ruby-identifier">any?</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000010-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 49</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">inherit_views</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">paths</span>)&#x000A;      <span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-identifier">extend</span> <span class="ruby-constant">PathsContainer</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:inherit_views_paths</span>)&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">inherit_views</span> = <span class="ruby-keyword kw">true</span>&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">paths</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">paths</span>.<span class="ruby-identifier">any?</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

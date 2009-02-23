@@ -126,15 +126,20 @@ module InheritViews
   module ActionView
     def self.included(base)
       base.class_eval do
-        # use InheritViews::PathSet, and give it my controller's inherit_view_paths
-        def view_paths=(value)
-          @view_paths = InheritViews::PathSet.new(value).tap do |paths|
-            paths.inherit_view_paths = controller.inherit_view_paths if (controller.inherit_views? rescue false)
-          end
+        def self.process_view_paths(value)
+          InheritViews::PathSet.new(Array(value))
         end
         
+        alias_method_chain :view_paths=, :inherit_views
         alias_method_chain :render, :parent
       end
+    end
+    
+    # give the path_set my controller's inherit_view_paths
+    def view_paths_with_inherit_views=(value)
+      self.view_paths_without_inherit_views=(value)
+      @view_paths.inherit_view_paths = controller.inherit_view_paths if (controller.inherit_views? rescue false)
+      @view_paths
     end
     
     # Extension for render which enables <%= render :parent %> (works for partials and top-level templates)

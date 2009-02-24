@@ -4,19 +4,18 @@ $LOAD_PATH.unshift(rspec_base) if File.exist?(rspec_base) and !$LOAD_PATH.includ
 
 require 'spec/rake/spectask'
 require 'spec/rake/verify_rcov'
-require 'hanna/rdoctask'
 
-plugin_name = 'inherit_views'
+PluginName = 'inherit_views'
 
 task :default => :spec
 
-desc "Run the specs for #{plugin_name}"
+desc "Run the specs for #{PluginName}"
 Spec::Rake::SpecTask.new(:spec) do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
   t.spec_opts  = ["--colour"]
 end
 
-desc "Generate RCov report for #{plugin_name}"
+desc "Generate RCov report for #{PluginName}"
 Spec::Rake::SpecTask.new(:rcov) do |t|
   t.spec_files  = FileList['spec/**/*_spec.rb']
   t.rcov        = true
@@ -25,61 +24,37 @@ Spec::Rake::SpecTask.new(:rcov) do |t|
 end
 
 namespace :rcov do
-  desc "Verify RCov threshold for #{plugin_name}"
+  desc "Verify RCov threshold for #{PluginName}"
   RCov::VerifyTask.new(:verify => :rcov) do |t|
     t.threshold = 100.0
     t.index_html = File.join(File.dirname(__FILE__), 'doc/coverage/index.html')
   end
 end
 
-task :rdoc => 'doc:build'
-task :doc => 'doc:build'
-
-namespace :doc do
+# the following optional tasks are for CI and doc building
+begin
+  require 'hanna/rdoctask'
+  require 'garlic/tasks'
+  require 'grancher/task'
   
-  current_sha = `git log HEAD -1 --pretty=format:"%H"`[0..6]
+  task :cruise => ['garlic:all', 'doc:publish']
   
-  Rake::RDocTask.new(:build) do |d|
+  Rake::RDocTask.new(:doc) do |d|
+    d.options << '--all'
     d.rdoc_dir = 'doc'
     d.main     = 'README.rdoc'
-    d.title    = "#{plugin_name} API Docs (#{current_sha})"
+    d.title    = "#{PluginName} API docs"
     d.rdoc_files.include('README.rdoc', 'History.txt', 'License.txt', 'Todo.txt', 'lib/**/*.rb')
   end
-  
-  task :push => 'doc:build' do
-    mv 'doc', 'newdoc'
-    on_gh_pages do
-      if doc_changed_sha?('newdoc', 'doc')
-        puts "doc has changed, pushing to gh-pages"
-        `rm -rf doc && mv newdoc doc`
-        `git add doc`
-        `git commit -a -m "Update API docs"`
-        `git push`
-      else
-        puts "doc is unchanged"
-        rm_rf 'newdoc'
-      end
+
+  namespace :doc do
+    Grancher::Task.new(:publish => :doc) do |g|
+      g.keep 'index.html', '.gitignore'
+      g.directory 'doc', 'doc'
+      g.branch = 'gh-pages'
+      g.push_to = 'origin'
     end
   end
-  
-  def doc_changed_sha?(docpath1, docpath2)
-    `cat #{docpath1}/index.html | grep "<title>"` != `cat #{docpath2}/index.html | grep "<title>"`
-  end
-  
-  def on_gh_pages(&block)
-    `git branch -m gh-pages orig-gh-pages > /dev/null 2>&1`
-    `git checkout -b gh-pages origin/gh-pages`
-    `git pull`
-    yield
-  ensure
-    `git checkout master`
-    `git branch -D gh-pages`
-    `git branch -m orig-gh-pages gh-pages > /dev/null 2>&1`
-  end
-end
 
-task :cruise do
-  sh "garlic clean && garlic all"
-  Rake::Task['doc:push'].invoke
-  puts "The build is GOOD"
+rescue LoadError
 end

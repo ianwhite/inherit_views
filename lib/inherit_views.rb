@@ -98,14 +98,14 @@ module InheritViews
     alias_method :orig_find_template, :find_template
     
     # look for a parent template if a standard one can't be found
-    def find_template(original_template_path, format = nil)
+    def find_template(template_path, format = nil)
       super
     rescue ::ActionView::MissingTemplate
-      find_parent_template(original_template_path, format)
+      find_parent_template(template_path, format)
     end
     
     # given a template_path and format, returns a parent template, or raise ActionView::MissingTemplate
-    def find_parent_template(template_path, format)
+    def find_parent_template(template_path, format = nil)
       # first, we grab the inherit view paths that are 'above' the given template_path
       if inherit_view_paths.present? && (starting_path = inherit_view_paths.detect {|path| template_path.starts_with?("#{path}/")})
         parent_paths = inherit_view_paths.slice(inherit_view_paths.index(starting_path)+1..-1)
@@ -122,7 +122,13 @@ module InheritViews
     end
   end
   
-  # Mixin for ActionView::Base to enable inherit views functionality
+  # Mixin for ActionView::Base to enable inherit views functionality.  There are two
+  # enhancements
+  #
+  # * view_paths are set to an InheritViews::PathSet object, and any inherit_view_paths 
+  #   are passed from the view's controller to the view_paths
+  #
+  # * render is extended to include support for render :parent, see render_with_parent
   module ActionView
     def self.included(base)
       base.class_eval do
@@ -135,14 +141,20 @@ module InheritViews
       end
     end
     
-    # give the path_set my controller's inherit_view_paths
+    # set the view_paths, and afterwards pass it my controller's inherit_view_paths
     def view_paths_with_inherit_views=(value)
-      self.view_paths_without_inherit_views=(value)
-      @view_paths.inherit_view_paths = controller.inherit_view_paths if (controller.inherit_views? rescue false)
-      @view_paths
+      returning self.view_paths_without_inherit_views=(value) do
+        @view_paths.inherit_view_paths = controller.inherit_view_paths if (controller.inherit_views? rescue false)
+      end
     end
     
-    # Extension for render which enables <%= render :parent %> (works for partials and top-level templates)
+    # Extension for render which enables the following (in partials as well as top-level tenplates)
+    #
+    #  <%= render :parent %>
+    #  <%= render :parent, :locals => {:foo => @foo} %>
+    #
+    # These calls will render the template that is 'above' the current template according to the#
+    # current controller's inherit_view_paths.
     def render_with_parent(*args, &block)
       if args.first == :parent
         args.shift

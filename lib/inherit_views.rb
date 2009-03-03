@@ -98,21 +98,21 @@ module InheritViews
     alias_method :orig_find_template, :find_template
     
     # look for a parent template if a standard one can't be found
-    def find_template(template_path, format = nil)
+    def find_template(template_path, format = nil, html_fallback = true)
       super
     rescue ::ActionView::MissingTemplate
       find_parent_template(template_path, format)
     end
     
     # given a template_path and format, returns a parent template, or raise ActionView::MissingTemplate
-    def find_parent_template(template_path, format = nil)
+    def find_parent_template(template_path, format = nil, html_fallback = true)
       # first, we grab the inherit view paths that are 'above' the given template_path
       if inherit_view_paths.present? && (starting_path = inherit_view_paths.detect {|path| template_path.starts_with?("#{path}/")})
         parent_paths = inherit_view_paths.slice(inherit_view_paths.index(starting_path)+1..-1)
         # then, search through each path, substituting the inherit view path, returning the first found
         parent_paths.each do |path|
           begin
-            return orig_find_template(template_path.sub(/^#{starting_path}/, path), format)
+            return orig_find_template(template_path.sub(/^#{starting_path}/, path), format, html_fallback)
           rescue ::ActionView::MissingTemplate
             next
           end

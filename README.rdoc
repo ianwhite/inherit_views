@@ -4,7 +4,7 @@
 
 inherit_views works with rails 2.x
 
-If you're on <b>rails master (2.3)</b>, you want {inherit_views/master}[http://github.com/ianwhite/inherit_views/tree/master]
+If you're on <b>rails 2.3 or rails edge</b>, you want {inherit_views/master}[http://github.com/ianwhite/inherit_views/tree/master]
 
 If you're on <b>rails 2.2</b>, you want {inherit_views/rails-2.2}[http://github.com/ianwhite/inherit_views/tree/rails-2.2]
 

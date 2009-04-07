@@ -5,12 +5,13 @@ garlic do
   repo 'rspec', :url => 'git://github.com/dchelimsky/rspec'
   repo 'rspec-rails', :url => 'git://github.com/dchelimsky/rspec-rails'
 
-  # first is rails target, last is inherit views branch
+  # Make sure you set up tracking branches for origin/rails-2.2, and origin/rails-2.0-2.1
   [ 
     {:rails => 'master',      :inherit_views => 'master'},
+    {:rails => '2-3-stable',  :inherit_views => 'master'},
     {:rails => '2-2-stable',  :inherit_views => 'rails-2.2'},
-    {:rails => '2-1-stable',  :inherit_views => 'rails-2.0-2.1'}
-    #{:rails => '2-0-stable',  :inherit_views => 'rails-2.0-2.1'} rspec + raisl 2.0 is not playing nice at the moment
+    {:rails => '2-1-stable',  :inherit_views => 'rails-2.0-2.1'},
+    {:rails => '2-0-stable',  :inherit_views => 'rails-2.0-2.1'}
   ].each do |target|
 
     target target[:rails], :branch => "origin/#{target[:rails]}" do

@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Module: InheritViews::ActionView [inherit_views API docs]</title>
+    <title>: InheritViews::ActionView [inherit_views API docs]</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../.././rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <link href='../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
       //<![CDATA[
         function popupCode(url) {
@@ -49,7 +49,7 @@
             
             </li>
             <li>render is extended to include support for render :parent, see <a
-            href="ActionView.html#M000009">render_with_parent</a>
+            href="ActionView.html#M000004">render_with_parent</a>
             
             </li>
             </ul>
@@ -58,47 +58,47 @@
             <h2>Methods</h2>
             <h3>public class</h3>
             <ol>
-              <li><a href="#M000006">included</a></li>
-              <li><a href="#M000007">process_view_paths</a></li>
+              <li><a href="#M000001">included</a></li>
+              <li><a href="#M000002">process_view_paths</a></li>
             </ol>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000009">render_with_parent</a></li>
-              <li><a href="#M000008">view_paths_with_inherit_views=</a></li>
+              <li><a href="#M000004">render_with_parent</a></li>
+              <li><a href="#M000003">view_paths_with_inherit_views=</a></li>
             </ol>
           </div>
           <div id='section'>
             <div id='methods'>
               <h2>Public class methods</h2>
-              <div class='public-class method' id='method-M000006'>
-                <a name='M000006'>      </a>
+              <div class='public-class method' id='method-M000001'>
+                <a name='M000001'>      </a>
                 <div class='synopsis'>
                   <span class='name'>included</span>
                   <span class='arguments'>(base)</span>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000006-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000001-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000006-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 133</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">included</span>(<span class="ruby-identifier">base</span>)&#x000A;      <span class="ruby-identifier">base</span>.<span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">process_view_paths</span>(<span class="ruby-identifier">value</span>)&#x000A;          <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Array</span>(<span class="ruby-identifier">value</span>))&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        &#x000A;        <span class="ruby-identifier">alias_method_chain</span> <span class="ruby-identifier">:view_paths=</span>, <span class="ruby-identifier">:inherit_views</span>&#x000A;        <span class="ruby-identifier">alias_method_chain</span> <span class="ruby-identifier">:render</span>, <span class="ruby-identifier">:parent</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000001-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 133</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">included</span>(<span class="ruby-identifier">base</span>)&#x000A;      <span class="ruby-identifier">base</span>.<span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">process_view_paths</span>(<span class="ruby-identifier">value</span>)&#x000A;          <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Array</span>(<span class="ruby-identifier">value</span>))&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        &#x000A;        <span class="ruby-identifier">alias_method_chain</span> <span class="ruby-identifier">:view_paths=</span>, <span class="ruby-identifier">:inherit_views</span>&#x000A;        <span class="ruby-identifier">alias_method_chain</span> <span class="ruby-identifier">:render</span>, <span class="ruby-identifier">:parent</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-class method' id='method-M000007'>
-                <a name='M000007'>      </a>
+              <div class='public-class method' id='method-M000002'>
+                <a name='M000002'>      </a>
                 <div class='synopsis'>
                   <span class='name'>process_view_paths</span>
                   <span class='arguments'>(value)</span>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000007-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000002-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000007-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 135</span>&#x000A;        <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">process_view_paths</span>(<span class="ruby-identifier">value</span>)&#x000A;          <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Array</span>(<span class="ruby-identifier">value</span>))&#x000A;        <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000002-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 135</span>&#x000A;        <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">process_view_paths</span>(<span class="ruby-identifier">value</span>)&#x000A;          <span class="ruby-constant">InheritViews</span><span class="ruby-operator">::</span><span class="ruby-constant">PathSet</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Array</span>(<span class="ruby-identifier">value</span>))&#x000A;        <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <h2>Public instance methods</h2>
-              <div class='public-instance method' id='method-M000009'>
-                <a name='M000009'>      </a>
+              <div class='public-instance method' id='method-M000004'>
+                <a name='M000004'>      </a>
                 <div class='synopsis'>
                   <span class='name'>render_with_parent</span>
                   <span class='arguments'>(*args, &amp;block)</span>
@@ -116,14 +116,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000009-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000004-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000009-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 158</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">render_with_parent</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:parent</span>&#x000A;        <span class="ruby-identifier">args</span>.<span class="ruby-identifier">shift</span>&#x000A;        <span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>[<span class="ruby-identifier">:file</span>] = <span class="ruby-identifier">view_paths</span>.<span class="ruby-identifier">find_parent_template</span>(<span class="ruby-identifier">template</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-identifier">template</span>.<span class="ruby-identifier">format</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-identifier">render_without_parent</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000004-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 158</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">render_with_parent</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:parent</span>&#x000A;        <span class="ruby-identifier">args</span>.<span class="ruby-identifier">shift</span>&#x000A;        <span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>[<span class="ruby-identifier">:file</span>] = <span class="ruby-identifier">view_paths</span>.<span class="ruby-identifier">find_parent_template</span>(<span class="ruby-identifier">template</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-identifier">template</span>.<span class="ruby-identifier">format</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-identifier">render_without_parent</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000008'>
-                <a name='M000008'>      </a>
+              <div class='public-instance method' id='method-M000003'>
+                <a name='M000003'>      </a>
                 <div class='synopsis'>
                   <span class='name'>view_paths_with_inherit_views=</span>
                   <span class='arguments'>(value)</span>
@@ -135,10 +135,10 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000008-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000003-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000008-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 145</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">view_paths_with_inherit_views=</span>(<span class="ruby-identifier">value</span>)&#x000A;      <span class="ruby-identifier">returning</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">view_paths_without_inherit_views</span>=(<span class="ruby-identifier">value</span>) <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-ivar">@view_paths</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_views?</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">false</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000003-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 145</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">view_paths_with_inherit_views=</span>(<span class="ruby-identifier">value</span>)&#x000A;      <span class="ruby-identifier">returning</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">view_paths_without_inherit_views</span>=(<span class="ruby-identifier">value</span>) <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-ivar">@view_paths</span>.<span class="ruby-identifier">inherit_view_paths</span> = <span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">controller</span>.<span class="ruby-identifier">inherit_views?</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">false</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

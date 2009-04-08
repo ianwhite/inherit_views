@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Module: InheritViews::PathsContainer [inherit_views API docs]</title>
+    <title>: InheritViews::PathsContainer [inherit_views API docs]</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../.././rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <link href='../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
       //<![CDATA[
         function popupCode(url) {
@@ -40,7 +40,7 @@
           <div id='description'>
             <p>
             class extension that enables <a
-            href="PathsContainer.html#M000004">inherit_view_paths</a> to be
+            href="PathsContainer.html#M000008">inherit_view_paths</a> to be
             calculated/set
             </p>
             <p>
@@ -52,35 +52,35 @@
             <h2>Methods</h2>
             <h3>public class</h3>
             <ol>
-              <li><a href="#M000001">extended</a></li>
+              <li><a href="#M000005">extended</a></li>
             </ol>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000004">inherit_view_paths</a></li>
-              <li><a href="#M000005">inherit_view_paths=</a></li>
-              <li><a href="#M000003">inherit_views=</a></li>
-              <li><a href="#M000002">inherit_views?</a></li>
+              <li><a href="#M000008">inherit_view_paths</a></li>
+              <li><a href="#M000009">inherit_view_paths=</a></li>
+              <li><a href="#M000007">inherit_views=</a></li>
+              <li><a href="#M000006">inherit_views?</a></li>
             </ol>
           </div>
           <div id='section'>
             <div id='methods'>
               <h2>Public class methods</h2>
-              <div class='public-class method' id='method-M000001'>
-                <a name='M000001'>      </a>
+              <div class='public-class method' id='method-M000005'>
+                <a name='M000005'>      </a>
                 <div class='synopsis'>
                   <span class='name'>extended</span>
                   <span class='arguments'>(base)</span>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000001-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000005-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000001-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 62</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">extended</span>(<span class="ruby-identifier">base</span>)&#x000A;      <span class="ruby-identifier">base</span>.<span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-identifier">delegate</span> <span class="ruby-identifier">:inherit_views?</span>, <span class="ruby-identifier">:inherit_view_paths</span>, <span class="ruby-identifier">:to</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'self.class'</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000005-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 62</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">extended</span>(<span class="ruby-identifier">base</span>)&#x000A;      <span class="ruby-identifier">base</span>.<span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-identifier">delegate</span> <span class="ruby-identifier">:inherit_views?</span>, <span class="ruby-identifier">:inherit_view_paths</span>, <span class="ruby-identifier">:to</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'self.class'</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <h2>Public instance methods</h2>
-              <div class='public-instance method' id='method-M000004'>
-                <a name='M000004'>      </a>
+              <div class='public-instance method' id='method-M000008'>
+                <a name='M000008'>      </a>
                 <div class='synopsis'>
                   <span class='name'>inherit_view_paths</span>
                   <span class='arguments'>()</span>
@@ -88,19 +88,19 @@
                 <div class='description'>
                   <p>
                   Return the inherit view paths, in order of self to ancestor. Takes <a
-                  href="PathsContainer.html#M000004">inherit_view_paths</a> from the
+                  href="PathsContainer.html#M000008">inherit_view_paths</a> from the
                   superclass when first read, and prepends the current controller_path
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000004-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000008-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000004-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 80</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">inherit_view_paths</span>&#x000A;      <span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-value str">'@inherit_view_paths'</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-value str">'@inherit_view_paths'</span>, [<span class="ruby-identifier">controller_path</span>] <span class="ruby-operator">+</span> (<span class="ruby-identifier">superclass</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">rescue</span> []))&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000008-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 80</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">inherit_view_paths</span>&#x000A;      <span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-value str">'@inherit_view_paths'</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-value str">'@inherit_view_paths'</span>, [<span class="ruby-identifier">controller_path</span>] <span class="ruby-operator">+</span> (<span class="ruby-identifier">superclass</span>.<span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-keyword kw">rescue</span> []))&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000005'>
-                <a name='M000005'>      </a>
+              <div class='public-instance method' id='method-M000009'>
+                <a name='M000009'>      </a>
                 <div class='synopsis'>
                   <span class='name'>inherit_view_paths=</span>
                   <span class='arguments'>(new_paths)</span>
@@ -113,14 +113,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000005-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000009-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000005-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 86</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">inherit_view_paths=</span>(<span class="ruby-identifier">new_paths</span>)&#x000A;      <span class="ruby-identifier">new_paths</span> <span class="ruby-operator">-=</span> [<span class="ruby-identifier">controller_path</span>]&#x000A;      <span class="ruby-identifier">old_paths</span> = <span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-operator">-</span> [<span class="ruby-identifier">controller_path</span>] <span class="ruby-operator">-</span> <span class="ruby-identifier">new_paths</span>&#x000A;      <span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-value str">'@inherit_view_paths'</span>, [<span class="ruby-identifier">controller_path</span>] <span class="ruby-operator">+</span> <span class="ruby-identifier">new_paths</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">old_paths</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000009-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 86</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">inherit_view_paths=</span>(<span class="ruby-identifier">new_paths</span>)&#x000A;      <span class="ruby-identifier">new_paths</span> <span class="ruby-operator">-=</span> [<span class="ruby-identifier">controller_path</span>]&#x000A;      <span class="ruby-identifier">old_paths</span> = <span class="ruby-identifier">inherit_view_paths</span> <span class="ruby-operator">-</span> [<span class="ruby-identifier">controller_path</span>] <span class="ruby-operator">-</span> <span class="ruby-identifier">new_paths</span>&#x000A;      <span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-value str">'@inherit_view_paths'</span>, [<span class="ruby-identifier">controller_path</span>] <span class="ruby-operator">+</span> <span class="ruby-identifier">new_paths</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">old_paths</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000003'>
-                <a name='M000003'>      </a>
+              <div class='public-instance method' id='method-M000007'>
+                <a name='M000007'>      </a>
                 <div class='synopsis'>
                   <span class='name'>inherit_views=</span>
                   <span class='arguments'>(bool)</span>
@@ -131,14 +131,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000003-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000007-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000003-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 74</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">inherit_views=</span>(<span class="ruby-identifier">bool</span>)&#x000A;      <span class="ruby-identifier">write_inheritable_attribute</span>(<span class="ruby-value str">'inherit_views'</span>, <span class="ruby-identifier">bool</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000007-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 74</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">inherit_views=</span>(<span class="ruby-identifier">bool</span>)&#x000A;      <span class="ruby-identifier">write_inheritable_attribute</span>(<span class="ruby-value str">'inherit_views'</span>, <span class="ruby-identifier">bool</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000002'>
-                <a name='M000002'>      </a>
+              <div class='public-instance method' id='method-M000006'>
+                <a name='M000006'>      </a>
                 <div class='synopsis'>
                   <span class='name'>inherit_views?</span>
                   <span class='arguments'>()</span>
@@ -149,10 +149,10 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000002-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000006-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000002-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 69</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">inherit_views?</span>&#x000A;      <span class="ruby-identifier">read_inheritable_attribute</span>(<span class="ruby-value str">'inherit_views'</span>) <span class="ruby-operator">?</span> <span class="ruby-keyword kw">true</span> <span class="ruby-operator">:</span> <span class="ruby-keyword kw">false</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000006-source'><span class="ruby-comment cmt"># File lib/inherit_views.rb, line 69</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">inherit_views?</span>&#x000A;      <span class="ruby-identifier">read_inheritable_attribute</span>(<span class="ruby-value str">'inherit_views'</span>) <span class="ruby-operator">?</span> <span class="ruby-keyword kw">true</span> <span class="ruby-operator">:</span> <span class="ruby-keyword kw">false</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

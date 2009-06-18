@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
 	s.name = %q{inherit_views}
 	s.version = '1.0.1'
 
-	s.date = %q{2009-6-18}
+	s.date = %q{2009-06-18}
 	s.summary = %q{Allow rails views to inherit from each other.}
 	s.description = %q{Allow rails views to inherit from each other.}
 	s.authors = ["Ian W. White", "thedarkone"]

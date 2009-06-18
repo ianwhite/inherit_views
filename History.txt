@@ -1,3 +1,5 @@
+* Added gemspec for GitHub auto-creation
+
 * Added ActionMailer support
 
 * Added support for rails 2.3

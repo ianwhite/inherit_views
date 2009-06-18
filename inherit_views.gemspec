@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = %q{inherit_views}
-	s.version = '1.0.2'
+	s.version = '1.0.3'
 
 	s.date = %q{2009-06-18}
 	s.summary = %q{Allow rails views to inherit from each other.}

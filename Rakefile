@@ -62,3 +62,35 @@ begin
 
 rescue LoadError
 end
+
+begin
+  require 'rake/gempackagetask'
+  $LOAD_PATH.unshift File.dirname(__FILE__) + '/lib'
+  require 'inherit_views/version'
+
+  spec = Gem::Specification.new do |s|
+    s.name          = "inherit_views"
+    s.version       = InheritViews::Version::String
+    s.summary       = "Allow rails controllers to inherit views."
+    s.description   = "Allow rails controllers to inherit views."
+    s.author        = "Ian White"
+    s.email         = "ian.w.white@gmail.com"
+    s.homepage      = "http://github.com/ianwhite/inherit_views/tree"
+    s.has_rdoc      = true
+    s.rdoc_options << "--title" << "Pickle" << "--line-numbers"
+    s.test_files    = FileList["spec/**/*_spec.rb"]
+    s.files         = FileList["lib/**/*.rb", "License.txt", "README.rdoc", "Todo.txt", "History.txt"]
+  end
+
+  Rake::GemPackageTask.new(spec) do |p|
+    p.gem_spec = spec
+    p.need_tar = true
+    p.need_zip = true
+  end
+
+  desc "Generate inherit_views.gemspec file"
+  task :build do
+    File.open('inherit_views.gemspec', 'w') {|f| f.write spec.to_ruby }
+  end
+rescue LoadError
+end

@@ -1,1 +1,3 @@
-require File.dirname(__FILE__) + "/rails/init"
+defined?(ActionController) && ActionController::Base.extend(InheritViews::ActMethod)
+defined?(ActionMailer) && ActionMailer::Base.extend(InheritViews::ActMethod)
+defined?(ActionView) && ActionView::Base.send(:include, InheritViews::ActionView)

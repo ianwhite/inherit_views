@@ -47,6 +47,27 @@ You can render the 'parent' template from within a template if you so choose.  T
 rendering bar/view (with the controller setup described above):
   <h1>Foo View</h1>
   <h2>With some 'bar' action</h2>
+
+== Installation
+
+You can install inherit_views as either a plugin or a gem. The easiest method is to install as a plugin
+by running the following command in your Rails project's top level directory:
+
+  ruby script/plugin install git://github.com/ianwhite/inherit_views.git
+
+This method will install the plugin into <tt>[RAILS PROJECT HOME]/vendor/plugins</tt>.
+
+If you find yourself installing inherit_views into many plugins a better alternative is to install the
+plugin as a gem so that it can be used in any Rails application (this requires {RubyGems}[http://rubygems.org]).
+
+  sudo gem install ianwhite-inherit_views
+
+Then, in your project's <tt>environment.rb</tt>, add a line like the following after the
+<tt>Rails::Initializer.run do |config|</tt> line.
+
+  config.gem 'ianwhite-inherit_views', :lib => 'inherit_views'
+
+Then restart your sever!
     
 == Testing & CI
 

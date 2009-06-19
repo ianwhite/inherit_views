@@ -84,3 +84,5 @@ Author: {Ian W. White}[http://github.com/ianwhite]
 Contributions by:
 
 * {The Dark One}[http://github.com/thedarkone]
+
+* {Topher Fangio}[http://github.com/topherfangio]

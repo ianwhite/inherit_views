@@ -1,4 +1,9 @@
-* Added gemspec for GitHub auto-creation
+== 0.9.0 - 19 June 2009
+
+* Added gems task
+
+
+== Prior to gems
 
 * Added ActionMailer support
 

@@ -66,9 +66,11 @@ Then, in your project's <tt>environment.rb</tt>, add a line like the following a
 <tt>Rails::Initializer.run do |config|</tt> line.
 
   config.gem 'ianwhite-inherit_views', :lib => 'inherit_views'
-
+  
 Then restart your sever!
-    
+
+Note that the gem version is compatible with >= Rails 2.3.
+
 == Testing & CI
 
 RSpec is used for testing, so the tests are in <tt>spec/</tt> rather than
